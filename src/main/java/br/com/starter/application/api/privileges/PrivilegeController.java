@@ -10,7 +10,7 @@ import br.com.starter.domain.privilege.PrivilegeService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/starter/api/privileges")
+@RequestMapping("/torque/api/privileges")
 public class PrivilegeController {
 
     private final PrivilegeService privilegeService;

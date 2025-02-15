@@ -25,7 +25,7 @@ import br.com.starter.domain.user.CustomUserDetails;
 import br.com.starter.domain.user.UserService;
 
 @RestController
-@RequestMapping("/starter/api/users")
+@RequestMapping("/torque/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;

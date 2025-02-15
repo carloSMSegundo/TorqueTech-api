@@ -18,8 +18,10 @@ public class Manager {
     @Id
     private UUID id = UUID.randomUUID();
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "garage_id", nullable = false)
     private Garage garage;
+
     @OneToOne
     private User user;
 

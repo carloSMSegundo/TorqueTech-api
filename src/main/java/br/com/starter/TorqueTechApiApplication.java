@@ -9,5 +9,4 @@ public class TorqueTechApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TorqueTechApiApplication.class, args);
 	}
-
 }

@@ -32,9 +32,9 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<?> update (
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @PathVariable("userId") UUID userId,
-            @RequestBody UpdateUserDTO request
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable("userId") UUID userId,
+        @RequestBody UpdateUserDTO request
     ) throws Exception {
         return ResponseEntity.ok(
             new ResponseDTO<>(

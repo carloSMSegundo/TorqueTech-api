@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/starter/api/roles")
+@RequestMapping("/torque/api/roles")
 public class RoleController {
 
     private final RoleService roleService;

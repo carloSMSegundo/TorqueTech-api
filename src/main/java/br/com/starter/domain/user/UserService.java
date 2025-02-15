@@ -17,6 +17,7 @@ import br.com.starter.infrastructure.services.utils.StringSanitizer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -186,6 +187,10 @@ public class UserService {
 
         userRepository.deleteById(userId);
         return true;
+    }
+
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     public User update (

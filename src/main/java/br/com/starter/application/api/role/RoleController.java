@@ -26,8 +26,8 @@ public class RoleController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllRoles(Pageable pageable) {
-        ResponseDTO<?> response = new ResponseDTO<>(roleService.getAllRoles(pageable));
+    public ResponseEntity<?> getAllRoles() {
+        ResponseDTO<?> response = new ResponseDTO<>(roleService.getAllRoles());
         return ResponseEntity.ok(response); 
     }
     @GetMapping("/{id}")

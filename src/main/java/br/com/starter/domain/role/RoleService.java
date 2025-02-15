@@ -47,9 +47,8 @@ public class RoleService {
         return savedRole;
     }
 
-    public Page<Role> getAllRoles(Pageable pageable) {
-        Page<Role> roles = roleRepository.findAll(pageable);
-        return roles;
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 
     public Role getRoleById(UUID roleId) {

@@ -14,5 +14,5 @@ public class UserRegistrationRequest {
     private String phone;
     private LocalDate birthDate = null;
     private UserStatus status = null;
-    private RoleType role = RoleType.ROLE_ADMIN;
+    private RoleType role = RoleType.ROLE_SUPER_ADMIN;
 }

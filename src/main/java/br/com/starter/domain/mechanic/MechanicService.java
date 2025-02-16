@@ -1,5 +1,6 @@
 package br.com.starter.domain.mechanic;
 
+import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,9 @@ public class MechanicService {
 
     public Optional<Mechanic> getById(UUID id) {
         return mechanicRepository.findById(id);
+    }
+
+    public Optional<Mechanic> getByUser(User user) {
+        return mechanicRepository.findByUser(user);
     }
 }

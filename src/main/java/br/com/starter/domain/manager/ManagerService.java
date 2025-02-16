@@ -1,5 +1,6 @@
 package br.com.starter.domain.manager;
 
+import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,9 @@ public class ManagerService {
 
     public Optional<Manager> getById(UUID id) {
         return managerRepository.findById(id);
+    }
+
+    public Optional<Manager> getByUser(User user) {
+        return  managerRepository.findByUser(user);
     }
 }

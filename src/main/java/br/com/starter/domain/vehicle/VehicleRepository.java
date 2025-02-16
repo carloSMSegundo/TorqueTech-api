@@ -1,4 +1,4 @@
-package br.com.starter.domain.manager;
+package br.com.starter.domain.vehicle;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ManagerRepository extends JpaRepository<Manager, UUID> {
+public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 }

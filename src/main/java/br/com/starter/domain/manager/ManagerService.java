@@ -1,7 +1,5 @@
 package br.com.starter.domain.manager;
 
-import br.com.starter.domain.manager.Manager;
-import br.com.starter.domain.manager.Manager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

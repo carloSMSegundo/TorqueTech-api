@@ -33,10 +33,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
                     .requestMatchers(BASE_URL + "/users/login").permitAll()
                     .requestMatchers(BASE_URL + "/users/{userId}/update-password").hasRole(RoleType.ROLE_MANAGER.getName())
                     .requestMatchers(BASE_URL + "/users/{userId}/update-username").hasRole(RoleType.ROLE_MANAGER.getName())
-                    .requestMatchers(BASE_URL + "/users/all").hasRole(RoleType.ROLE_SUPER_ADMIN.getName())
                     .requestMatchers(BASE_URL + "/users/{userId}/privileges/{privilegeId}/remove").hasRole(RoleType.ROLE_ADMIN.getName())
                     .requestMatchers(BASE_URL + "/users/{userId}/privileges/{privilegeId}/add").hasRole(RoleType.ROLE_ADMIN.getName())
                     .requestMatchers(HttpMethod.DELETE, BASE_URL + "/users").hasRole(RoleType.ROLE_ADMIN.getName())
+                    .requestMatchers(BASE_URL + "/users/all").hasRole(RoleType.ROLE_SUPER_ADMIN.getName())
+                    .requestMatchers(BASE_URL + "/garage").hasRole(RoleType.ROLE_SUPER_ADMIN.getName())
                     .requestMatchers(BASE_URL + "**").hasRole(RoleType.ROLE_USER.getName())
                     .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement

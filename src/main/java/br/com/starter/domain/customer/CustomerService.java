@@ -28,7 +28,7 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    // Método para listagem paginada com filtros
+    // Metodo para listagem paginada com filtros
     public Page<Customer> listCustomers(User owner, String profileName, UserStatus status, int page, int size) {
         // Configura a paginação
         PageRequest pageable = PageRequest.of(page, size);

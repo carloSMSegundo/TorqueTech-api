@@ -15,7 +15,9 @@ public class GetPageGarageUseCase {
 
     public Optional<?> handler(Integer page, GetPageRequest request) {
         return Optional.of(
-            garageService.findAllPage(
+            garageService.getPageByOwnerStatusAndName(
+                request.getQuery(),
+                request.getStatus(),
                 PageRequest.of(page, request.getSize())
             )
         );

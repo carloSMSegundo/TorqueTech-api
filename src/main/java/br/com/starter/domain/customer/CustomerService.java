@@ -1,6 +1,5 @@
 package br.com.starter.domain.customer;
 
-import br.com.starter.domain.user.User;
 import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,20 +27,9 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    // Metodo para listagem paginada com filtros
-    public Page<Customer> listCustomers(User owner, String profileName, UserStatus status, int page, int size) {
-        // Configura a paginação
+    // Método atualizado para listagem paginada com filtros
+    public Page<Customer> listCustomers(String query, UserStatus status, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
-
-        // Verifica qual filtro foi passado e chama o metodo adequado no repositório
-        if (profileName != null && status != null) {
-            return customerRepository.findByProfileName(profileName, pageable);
-        } else if (status != null) {
-            return customerRepository.findByStatus(status, pageable);
-        } else if (profileName != null) {
-            return customerRepository.findByProfileName(profileName, pageable);
-        } else {
-            return customerRepository.findByOwner(owner, pageable);
-        }
+        return customerRepository.findPageByStatusAndProfileName(query, status, pageable);
     }
 }

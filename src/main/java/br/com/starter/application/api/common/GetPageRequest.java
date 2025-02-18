@@ -7,5 +7,5 @@ import lombok.Data;
 public class GetPageRequest {
     private Integer size = 10;
     private String query = null;
-    private UserStatus status = null;
+    private UserStatus status = UserStatus.ACTIVE;
 }

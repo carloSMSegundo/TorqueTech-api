@@ -21,9 +21,9 @@ public interface GarageRepository extends JpaRepository<Garage, UUID> {
         SELECT g FROM Garage g
         WHERE g.owner.status = :status
         AND (
-            :query IS NULL
-            OR LOWER(g.name) LIKE %:query%
-            OR LOWER(g.owner.profile.name) LIKE %:query%
+           :query IS NULL
+           OR LOWER(g.name) LIKE LOWER(CONCAT('%', :query, '%'))
+           OR LOWER(g.owner.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
     Page<Garage> findPageByStatusAndNames(

@@ -28,9 +28,11 @@ public class CreateGarageUseCase {
         garage.setName(request.getName());
         garage.setCnpj(request.getCnpj());
 
-        // Clona informações de endereço
-        var address = mapper.map(request.getAddress(), Address.class);
-        garage.setAddress(address);
+        if (request.getAddress() != null) {
+            // Clona informações de endereço
+            var address = mapper.map(request.getAddress(), Address.class);
+            garage.setAddress(address);
+        }
 
         // Clona informações de criação de usuário
         var createUserRequest = mapper.map(request, UserRegistrationRequest.class);

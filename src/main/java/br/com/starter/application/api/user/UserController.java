@@ -4,6 +4,7 @@ import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.user.dto.AuthRequestDTO;
 import br.com.starter.application.api.user.dto.UpdateUserDTO;
 import br.com.starter.application.api.user.dto.UserRegistrationRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistrationRequest user) {
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegistrationRequest user) {
         ResponseDTO<?> response = new ResponseDTO<>(userService.create(user));
         return ResponseEntity.ok(response);
     }

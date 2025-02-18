@@ -23,6 +23,8 @@ public class Customer {
 
     private UserStatus status;
 
+    private String name;  // Nome do cliente
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     private Profile profile;

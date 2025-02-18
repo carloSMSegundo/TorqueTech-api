@@ -15,8 +15,12 @@ import java.util.UUID;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-
     public Customer save(Customer customer) {
+        // Verificando se o nome foi preenchido corretamente antes de salvar
+        if (customer.getName() == null || customer.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome do cliente é obrigatório.");
+        }
+
         return customerRepository.save(customer);
     }
 
@@ -38,8 +42,7 @@ public class CustomerService {
     public Optional<Customer> findByIdWithVehicles(UUID id) {
         Optional<Customer> customer = customerRepository.findById(id);
         customer.ifPresent(c -> {
-            // Aqui, caso seja necessário, você pode carregar os veículos do cliente de forma explícita
-            // Dependendo da configuração do relacionamento (fetch = FetchType.LAZY ou FetchType.EAGER)
+            // Caso necessário, carregar os veículos do cliente de forma explícita
         });
         return customer;
     }

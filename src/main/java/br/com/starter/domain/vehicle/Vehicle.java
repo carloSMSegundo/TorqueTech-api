@@ -1,5 +1,6 @@
 package br.com.starter.domain.vehicle;
 
+import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.vehicleType.VehicleType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
@@ -27,9 +28,14 @@ public class Vehicle {
     private String color;
 
     // Relacionamento com a entidade VehicleType
-    @ManyToOne(fetch = FetchType.LAZY) // Indica que um veículo pode ter apenas um tipo, mas um tipo pode ser associado a vários veículos.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_type_id", foreignKey = @ForeignKey(name = "fk_vehicle_vehicle_type"))
     private VehicleType vehicleType;  // Associa o tipo de veículo
+
+    // Relacionamento com o Customer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_vehicle_customer"))
+    private Customer customer;  // Associa o cliente que possui o veículo
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();

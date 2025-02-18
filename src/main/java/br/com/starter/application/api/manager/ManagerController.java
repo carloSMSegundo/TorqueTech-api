@@ -1,23 +1,27 @@
 package br.com.starter.application.api.manager;
 
+import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.manager.dtos.CreateManagerDTO;
 import br.com.starter.application.useCase.manager.CreateManagerUseCase;
+import br.com.starter.application.useCase.manager.GetManagerUseCase;
+import br.com.starter.application.useCase.manager.GetPageManagerUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/torque/api/manager")
 @RequiredArgsConstructor
 public class ManagerController {
     private final CreateManagerUseCase createManagerUseCase;
+    private final GetPageManagerUseCase getPageManagerUseCase;
+    private final GetManagerUseCase getManagerUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -28,6 +32,31 @@ public class ManagerController {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
                         createManagerUseCase.handler(request, user)
+                )
+        );
+    }
+
+    @PostMapping("/page/{page}")
+    public ResponseEntity<?> page(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable Integer page,
+            @RequestBody GetPageRequest request
+    ){
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        getPageManagerUseCase.handler(page, request, userAuthentication)
+                )
+        );
+    }
+
+    @GetMapping("/{managerId}")
+    public ResponseEntity<?> get(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID managerId
+    ) {
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        getManagerUseCase.handler(managerId)
                 )
         );
     }

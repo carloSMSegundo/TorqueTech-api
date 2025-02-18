@@ -3,6 +3,7 @@ package br.com.starter.domain.garage;
 import br.com.starter.domain.manager.ManagerService;
 import br.com.starter.domain.mechanic.MechanicService;
 import br.com.starter.domain.user.User;
+import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,18 @@ public class GarageService {
 
     public Page<Garage> findAllPage(Pageable pageable) {
         return garageRepository.findAll(pageable);
+    }
+
+    public Page<Garage> getPageByOwnerStatusAndName(
+        String query,
+        UserStatus userStatus,
+        Pageable pageable
+    ) {
+        return garageRepository.findPageByStatusAndNames(
+            query,
+            userStatus,
+            pageable
+        );
     }
 
     public Garage getByUser(User user) {

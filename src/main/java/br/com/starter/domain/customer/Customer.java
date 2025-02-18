@@ -4,11 +4,13 @@ import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.profile.Profile;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.user.UserStatus;
+import br.com.starter.domain.vehicle.Vehicle;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,4 +37,7 @@ public class Customer {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Vehicle> vehicles;
 }

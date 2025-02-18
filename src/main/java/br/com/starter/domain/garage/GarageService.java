@@ -61,7 +61,7 @@ public class GarageService {
 
         return  garageRepository.findByOwner(user).orElseThrow(() ->
             new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 "O usuário não possui uma oficina registrada"
             )
         );

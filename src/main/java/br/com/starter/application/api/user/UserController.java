@@ -3,7 +3,9 @@ package br.com.starter.application.api.user;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.user.dto.AuthRequestDTO;
 import br.com.starter.application.api.user.dto.UpdateUserDTO;
+import br.com.starter.application.api.user.dto.UpdateUserStatusDTO;
 import br.com.starter.application.api.user.dto.UserRegistrationRequest;
+import br.com.starter.application.useCase.user.UpdateUserStatusUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,7 @@ import br.com.starter.domain.user.UserService;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UpdateUserStatusUseCase updateUserStatusUseCase;
 
     @PutMapping("/{userId}")
     public ResponseEntity<?> update (
@@ -40,6 +43,22 @@ public class UserController {
         return ResponseEntity.ok(
             new ResponseDTO<>(
                 userService.update(
+                    userId,
+                    request
+                )
+            )
+        );
+    }
+
+    @PutMapping("/{userId}/status")
+    public ResponseEntity<?> updateStatus(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID userId,
+        @RequestBody UpdateUserStatusDTO request
+    ) {
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                updateUserStatusUseCase.handler(
                     userId,
                     request
                 )

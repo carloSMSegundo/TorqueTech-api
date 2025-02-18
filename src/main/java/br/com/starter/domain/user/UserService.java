@@ -110,7 +110,7 @@ public class UserService {
     public User getUserById (UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
+                        HttpStatus.BAD_REQUEST,
                         "Usuário não encontrado!"));
     }
 

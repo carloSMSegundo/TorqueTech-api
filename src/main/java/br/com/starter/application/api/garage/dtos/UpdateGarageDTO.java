@@ -7,9 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
-public class CreateGarageDTO {
+public class UpdateGarageDTO {
     private String name;
     private String cnpj;
 
@@ -21,10 +22,9 @@ public class CreateGarageDTO {
 
     @NotBlank(message = "O nome é obrigatório")
     private String ownerName;
+    private UUID ownerId;
     private String document;
     private String phone;
     private LocalDate birthDate = null;
-    private RoleType role = RoleType.ROLE_ADMIN;
-
     private AddressDTO address = null;
 }

@@ -19,21 +19,15 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public ResponseEntity<Auth> createAuth(String username, String rawPassword) {
-        if (authRepository.existsByUsername(username)) {
+    public Auth createAuth(String username, String rawPassword) {
+        if (authRepository.existsByUsername(username))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Conflito, usuário já existe!");
-        }
 
         Auth auth = new Auth();
         auth.setUsername(username);
         auth.setPassword(passwordEncoder.encode(rawPassword)); // Codifica corretamente a senha
 
-        Auth savedAuth = authRepository.save(auth);
-        if (savedAuth != null) {
-            return new ResponseEntity<>(savedAuth, HttpStatus.CREATED);
-        } else {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro, criação de autenticação falhou!");
-        }
+        return authRepository.save(auth);
     }
 
     // Atualizar a senha de um usuário

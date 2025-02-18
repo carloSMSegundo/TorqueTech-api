@@ -23,7 +23,7 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
         AND manager.user.status = :status
         AND (
             :query IS NULL
-            OR LOWER(manager.user.profile.name) LIKE %:query%
+            OR LOWER(manager.user.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
     Page<Manager> findPageByStatusAndNames(

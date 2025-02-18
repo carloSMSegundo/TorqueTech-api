@@ -1,7 +1,10 @@
 package br.com.starter.domain.manager;
 
 import br.com.starter.domain.user.User;
+import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +26,22 @@ public class ManagerService {
 
     public Optional<Manager> getById(UUID id) {
         return managerRepository.findById(id);
+    }
+
+    public Page<Manager> findAllPage(Pageable pageable) {
+        return managerRepository.findAll(pageable);
+    }
+
+    public Page<Manager> getPageByOwnerStatusAndName(
+            String query,
+            UserStatus userStatus,
+            Pageable pageable
+    ) {
+        return managerRepository.findPageByStatusAndNames(
+                query,
+                userStatus,
+                pageable
+        );
     }
 
     public Optional<Manager> getByUser(User user) {

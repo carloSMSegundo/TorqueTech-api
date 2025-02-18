@@ -32,12 +32,14 @@ public class ManagerService {
         return managerRepository.findAll(pageable);
     }
 
-    public Page<Manager> getPageByOwnerStatusAndName(
+    public Page<Manager> getPageByStatusAndName(
+            User user,
             String query,
             UserStatus userStatus,
             Pageable pageable
     ) {
         return managerRepository.findPageByStatusAndNames(
+                user,
                 query,
                 userStatus,
                 pageable

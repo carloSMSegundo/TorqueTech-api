@@ -19,13 +19,15 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
 
     @Query("""
         SELECT manager FROM Manager manager
-        WHERE manager.user.status = :status
+        WHERE manager.garage.owner = :user
+        AND manager.user.status = :status
         AND (
             :query IS NULL
             OR LOWER(manager.user.profile.name) LIKE %:query%
         )
     """)
     Page<Manager> findPageByStatusAndNames(
+            @Param("user") User user,
             @Param("query") String query,
             @Param("status") UserStatus status,
             Pageable pageable

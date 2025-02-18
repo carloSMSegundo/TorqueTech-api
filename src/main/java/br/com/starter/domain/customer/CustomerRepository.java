@@ -5,13 +5,16 @@
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.data.jpa.repository.Query;
 
+    import java.util.Optional;
     import java.util.UUID;
 
     public interface CustomerRepository extends JpaRepository<Customer, UUID> {
         Page<Customer> findByOwner(User owner, Pageable pageable);
 
-        Page<Customer> findByProfile_Name(String profileName, Pageable pageable);
+        @Query("SELECT c FROM Customer c WHERE c.profile.name =:profileusername")
+        Page<Customer> findByProfileName(String profileName, Pageable pageable);
 
         Page<Customer> findByStatus(UserStatus status, Pageable pageable);
     }

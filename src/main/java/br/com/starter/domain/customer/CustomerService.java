@@ -35,11 +35,11 @@ public class CustomerService {
 
         // Verifica qual filtro foi passado e chama o metodo adequado no repositório
         if (profileName != null && status != null) {
-            return customerRepository.findByProfile_Name(profileName, pageable);
+            return customerRepository.findByProfileName(profileName, pageable);
         } else if (status != null) {
             return customerRepository.findByStatus(status, pageable);
         } else if (profileName != null) {
-            return customerRepository.findByProfile_Name(profileName, pageable);
+            return customerRepository.findByProfileName(profileName, pageable);
         } else {
             return customerRepository.findByOwner(owner, pageable);
         }

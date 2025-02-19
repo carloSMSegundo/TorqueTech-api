@@ -44,7 +44,7 @@ public class ManagerController {
     ){
         return ResponseEntity.ok(
                 new ResponseDTO<>(
-                        getPageManagerUseCase.handler(page, request, userAuthentication)
+                        getPageManagerUseCase.handler(page, request, userAuthentication.getUser())
                 )
         );
     }

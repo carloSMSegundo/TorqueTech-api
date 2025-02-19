@@ -1,5 +1,6 @@
 package br.com.starter.domain.manager;
 
+import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,13 @@ public class ManagerService {
     }
 
     public Page<Manager> getPageByStatusAndName(
-            User user,
+            Garage garage,
             String query,
             UserStatus userStatus,
             Pageable pageable
     ) {
         return managerRepository.findPageByStatusAndNames(
-                user,
+                garage.getId(),
                 query,
                 userStatus,
                 pageable

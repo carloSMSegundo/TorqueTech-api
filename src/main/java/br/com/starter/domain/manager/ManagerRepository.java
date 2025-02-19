@@ -19,7 +19,7 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
 
     @Query("""
         SELECT manager FROM Manager manager
-        WHERE manager.garage.owner = :user
+        WHERE manager.garage.id = :garageId
         AND manager.user.status = :status
         AND (
             :query IS NULL
@@ -27,7 +27,7 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
         )
     """)
     Page<Manager> findPageByStatusAndNames(
-            @Param("user") User user,
+            @Param("garageId") UUID garageId,
             @Param("query") String query,
             @Param("status") UserStatus status,
             Pageable pageable

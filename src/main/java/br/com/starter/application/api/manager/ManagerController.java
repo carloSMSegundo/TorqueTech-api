@@ -3,9 +3,11 @@ package br.com.starter.application.api.manager;
 import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.manager.dtos.CreateManagerDTO;
+import br.com.starter.application.api.manager.dtos.UpdateManagerDTO;
 import br.com.starter.application.useCase.manager.CreateManagerUseCase;
 import br.com.starter.application.useCase.manager.GetManagerUseCase;
 import br.com.starter.application.useCase.manager.GetPageManagerUseCase;
+import br.com.starter.application.useCase.manager.UpdateManagerUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class ManagerController {
     private final CreateManagerUseCase createManagerUseCase;
     private final GetPageManagerUseCase getPageManagerUseCase;
     private final GetManagerUseCase getManagerUseCase;
+    private final UpdateManagerUseCase updateManagerUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -32,6 +35,20 @@ public class ManagerController {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
                         createManagerUseCase.handler(request, user)
+                )
+        );
+    }
+
+    @PutMapping("/{managerId}")
+    public ResponseEntity<?> create(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody UpdateManagerDTO request,
+            @PathVariable UUID managerId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        updateManagerUseCase.handler(managerId, request, user)
                 )
         );
     }

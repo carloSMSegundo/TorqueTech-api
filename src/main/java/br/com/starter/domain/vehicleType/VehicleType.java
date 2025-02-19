@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "VehicleType")
+@Table(name = "vehicle_type")  // Coloque o nome correto da tabela em minúsculas
 @Getter
 @Setter
 public class VehicleType {
@@ -25,3 +25,4 @@ public class VehicleType {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
 }
+

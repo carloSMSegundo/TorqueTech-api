@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service // Anotação que indica que essa classe é um serviço no Spring
@@ -15,9 +16,9 @@ public class VehicleTypeService {
 
     // Cadastro de um novo tipo de veículo
     public VehicleType save(VehicleType vehicleType) {
-        // O metodo save do repositório persiste o tipo de veículo no banco de dados
         return vehicleTypeRepository.save(vehicleType);
     }
+
 
     // Atualização de um tipo de veículo existente
     public VehicleType update(UUID id, VehicleType vehicleType) {
@@ -56,4 +57,22 @@ public class VehicleTypeService {
         // Este metodo vai procurar os tipos de veículos que possuem a marca e o modelo que contenham os valores passados (não sensível a maiúsculas/minúsculas)
         return vehicleTypeRepository.findByBrandContainingIgnoreCaseAndModelContainingIgnoreCase(brand, model, pageable);
     }
+
+    public VehicleType findOrCreate(String model, String brand, String year) {
+        // Busca um VehicleType pelo modelo, marca e ano
+        Optional<VehicleType> existingVehicleType = vehicleTypeRepository
+                .findByModelAndBrandAndYear(model, brand, year);
+
+        // Se encontrar, retorna o existente, senão cria um novo
+        return existingVehicleType.orElseGet(() -> {
+            VehicleType newVehicleType = new VehicleType();
+            newVehicleType.setModel(model);
+            newVehicleType.setBrand(brand);
+            newVehicleType.setYear(year);
+            return vehicleTypeRepository.save(newVehicleType);
+        });
+    }
+
+
+
 }

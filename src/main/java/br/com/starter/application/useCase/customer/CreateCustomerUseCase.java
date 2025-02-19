@@ -28,39 +28,31 @@ public class CreateCustomerUseCase {
     @Transactional
     public Optional<Customer> handler(CreateCustomerDTO request) {
 
-        // Criando o cliente
         Customer customer = new Customer();
         customer.setStatus(request.getStatus());
         customer.setName(request.getName());  // Definindo o nome do cliente
 
-        // Criando o perfil do cliente e associando dados
         Profile profile = new Profile();
         profile.setDocument(request.getDocument());
         profile.setName(request.getName());  // Nome do cliente
         profile.setPhone(request.getPhone());
         profile.setBirthDate(request.getBirthDate());
 
-        // Se o endereço for fornecido, associamos ao perfil
         if (request.getAddress() != null) {
             profile.setAddress(request.getAddress());
         }
 
-        // Associando o perfil ao cliente
         customer.setProfile(profile);
 
-        // Criando a garagem e associando ao cliente
         Garage garage = new Garage();
         customer.setGarage(garage);
 
-        // Buscando o usuário (owner) que está criando o cliente
         User owner = userService.getUserById(request.getOwnerId());
 
-        // Associando o owner ao cliente
         customer.setOwner(owner);
 
         customer.setCreatedAt(request.getCreatedAt());
 
-        // Verificando e associando veículos ao cliente
         if (request.getVehicleIds() != null && !request.getVehicleIds().isEmpty()) {
             List<Vehicle> vehicles = request.getVehicleIds().stream()
                     .map(vehicleId -> vehicleService.getById(vehicleId)
@@ -68,7 +60,7 @@ public class CreateCustomerUseCase {
                     .collect(Collectors.toList());
             customer.setVehicles(vehicles);
         } else {
-            customer.setVehicles(List.of());  // Se não houver veículos, definimos como lista vazia
+            customer.setVehicles(List.of());
         }
 
         // Salvando o cliente

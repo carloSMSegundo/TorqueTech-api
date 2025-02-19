@@ -11,7 +11,9 @@ import br.com.starter.domain.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -26,7 +28,12 @@ public class CreateManagerUseCase {
     public Optional<Manager> handler(CreateManagerDTO request, User user){
         ModelMapper mapper = new ModelMapper();
 
-        Garage garage = garageService.getByUser(user);
+        Garage garage = garageService.getByUser(user).orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "O usuário não possui uma oficina registrada"
+            )
+        );
 
         var manager = new Manager();
 

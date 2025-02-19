@@ -50,20 +50,15 @@ public class GarageService {
         );
     }
 
-    public Garage getByUser(User user) {
+    public Optional<Garage> getByUser(User user) {
         var mechanic = mechanicService.getByUser(user);
         if (mechanic.isPresent())
-            return mechanic.get().getGarage();
+            return Optional.of(mechanic.get().getGarage());
 
         var manager= managerService.getByUser(user);
         if (manager.isPresent())
-            return manager.get().getGarage();
+            return Optional.of(manager.get().getGarage());
 
-        return  garageRepository.findByOwner(user).orElseThrow(() ->
-            new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "O usuário não possui uma oficina registrada"
-            )
-        );
+        return  garageRepository.findByOwner(user.getId());
     }
 }

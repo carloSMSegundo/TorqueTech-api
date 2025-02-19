@@ -17,6 +17,8 @@ public class UpdateUserStatusUseCase {
         var user = userService.getUserById(userId);
         user.setStatus(request.getStatus());
 
-        return Optional.of(userService.save(user));
+        user = userService.save(user);
+
+        return Optional.of(user);
     }
 }

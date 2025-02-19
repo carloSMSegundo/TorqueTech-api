@@ -53,36 +53,21 @@ public class UserService {
         }
     }
 
-    @Transactional
     public User save(User user) {
-        if (user.getProfile() != null && user.getProfile().getDocument() != null) {
-            String document = user.getProfile().getDocument();
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User create(UserRegistrationRequest user) {
+        if (user.getDocument() != null) {
+            String document = user.getDocument() ;
             if (document.length() == 11 && !new DocumentValidatorUtil().checkCpf(document)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
             } else if (document.length() == 14 && !new DocumentValidatorUtil().checkCnpj(document)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
             }
         }
-        try {
-            // Auth service já faz a verificação do username
-            Auth auth = authService.createAuth(user.getAuth().getUsername(), user.getAuth().getPassword()).getBody();
-            user.setAuth(auth);
-        } catch (ResponseStatusException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Erro ao criar autenticação: " + e.getReason());
-        }
-        Optional<User> userSaved = Optional.ofNullable(userRepository.save(user));
-        
-        if (!userSaved.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao salvar usuário!");
-        }
 
-        return userSaved.get();
-    }
-
-    @Transactional
-    public User create(UserRegistrationRequest user) {
         User newUser = new User();
 
         if(user.getStatus() != null)
@@ -104,7 +89,20 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role não encontrada!"));
         newUser.setRole(role);
 
-        return save(newUser);
+        try {
+            var auth = authService.createAuth(
+                user.getUsername(),
+                user.getPassword()
+            );
+
+            newUser.setAuth(auth);
+        } catch (ResponseStatusException e) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Erro ao criar autenticação: " + e.getReason());
+        }
+
+        return userRepository.save(newUser);
     }
 
     public User getUserById (UUID userId) {

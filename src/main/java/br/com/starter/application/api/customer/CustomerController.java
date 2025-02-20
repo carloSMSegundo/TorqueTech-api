@@ -33,7 +33,9 @@ public class CustomerController {
     ) {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
-                        createCustomerDTO));
+                        createCustomerUseCase.handler(createCustomerDTO, userAuthentication.getUser())
+                )
+        );
     }
 
     @GetMapping("/{id}")

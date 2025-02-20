@@ -13,6 +13,10 @@ public class CreateVehicleTypeUseCase {
     private final VehicleTypeService vehicleTypeService;
 
     public VehicleType handler(CreateVehicleTypeDTO request) {
+        if (vehicleTypeService.existsByModel(request.getModel())) {
+            throw new IllegalArgumentException("Já existe um veículo com esse modelo cadastrado.");
+        }
+
         VehicleType vehicleType = new VehicleType();
         vehicleType.setModel(request.getModel());
         vehicleType.setBrand(request.getBrand());

@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS customer (
     owner_id UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_customer_profile FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE SET NULL,
-    CONSTRAINT fk_customer_garage FOREIGN KEY (garage_id) REFERENCES garage(id) ON DELETE CASCADE,
-    CONSTRAINT fk_customer_owner FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_customer_garage FOREIGN KEY (garage_id) REFERENCES garage(id),
+    CONSTRAINT fk_customer_owner FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
     );

@@ -15,12 +15,8 @@ import java.util.UUID;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-    public Customer save(Customer customer) {
-        // Verificando se o nome foi preenchido corretamente antes de salvar
-        if (customer.getName() == null || customer.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do cliente é obrigatório.");
-        }
-
+    public Customer save(Customer customer)
+    {
         return customerRepository.save(customer);
     }
 

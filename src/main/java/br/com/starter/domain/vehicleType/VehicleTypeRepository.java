@@ -14,4 +14,5 @@ public interface VehicleTypeRepository extends JpaRepository<VehicleType, UUID> 
 
     Optional<VehicleType> findByModelAndBrandAndYear(String model, String brand, String year);
 
+    Optional<VehicleType> findByModel(String model);
 }

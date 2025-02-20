@@ -27,12 +27,10 @@ public class Vehicle {
     private String licensePlate;
     private String color;
 
-    // Relacionamento com a entidade VehicleType
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_type_id", foreignKey = @ForeignKey(name = "fk_vehicle_vehicle_type"))
     private VehicleType vehicleType;  // Associa o tipo de veículo
 
-    // Relacionamento com o Customer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_vehicle_customer"))
     private Customer customer;  // Associa o cliente que possui o veículo

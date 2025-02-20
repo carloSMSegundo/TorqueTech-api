@@ -40,7 +40,6 @@ public class CreateMechanicUseCase {
         mechanic.setGarage(garage);  // dúvida - código duplicado
 
         var createUserRequest = mapper.map(request, UserRegistrationRequest.class);
-        createUserRequest.setName(request.getOwnerName());
 
         var newUser = userService.create(createUserRequest);
         mechanic.setUser(newUser);

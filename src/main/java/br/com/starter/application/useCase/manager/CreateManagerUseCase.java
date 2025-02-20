@@ -38,9 +38,7 @@ public class CreateManagerUseCase {
         var manager = new Manager();
 
         manager.setGarage(garage);
-
         var createUserRequest = mapper.map(request, UserRegistrationRequest.class);
-        createUserRequest.setName(request.getOwnerName());
 
         var newUser = userService.create(createUserRequest);
         manager.setUser(newUser);

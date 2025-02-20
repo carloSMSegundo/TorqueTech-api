@@ -13,9 +13,8 @@ public class UpdateMechanicDTO {
     private String username;
     @NotBlank(message = "A senha é obrigatória")
     private String password;
-    @NotBlank(message = "O nome é obrigatório")
-    private String ownerName;
 
+    private String name;
     private String document;
     private String phone;
     private LocalDate birthDate = null;

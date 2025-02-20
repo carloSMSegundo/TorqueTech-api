@@ -51,7 +51,6 @@ public class UpdateManagerUseCase {
         }
 
         var updateRequest = mapper.map(request, UpdateUserDTO.class);
-        updateRequest.setName(request.getOwnerName());
         updateRequest.setEmail(request.getUsername());
 
         var updatedUser = userService.update(manager.getUser().getId(), updateRequest);

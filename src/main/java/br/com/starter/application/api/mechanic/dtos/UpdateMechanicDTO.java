@@ -1,4 +1,4 @@
-package br.com.starter.application.api.manager.dtos;
+package br.com.starter.application.api.mechanic.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class UpdateManagerDTO {
+public class UpdateMechanicDTO {
     @Email(message = "O username deve ser um email válido")
     @NotBlank(message = "O email é obrigatório")
     private String username;

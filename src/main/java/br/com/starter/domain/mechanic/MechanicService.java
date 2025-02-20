@@ -1,7 +1,11 @@
 package br.com.starter.domain.mechanic;
 
+import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.user.User;
+import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +27,24 @@ public class MechanicService {
 
     public Optional<Mechanic> getById(UUID id) {
         return mechanicRepository.findById(id);
+    }
+
+    public Page<Mechanic> findAllPage(Pageable pageable) {
+        return mechanicRepository.findAll(pageable);
+    }
+
+    public Page<Mechanic> getPageByStatusAndName(
+            Garage garage,
+            String query,
+            UserStatus userStatus,
+            Pageable pageable
+    ) {
+        return mechanicRepository.findPageByStatusAndNames(
+                garage.getId(),
+                query,
+                userStatus,
+                pageable
+        );
     }
 
     public Optional<Mechanic> getByUser(User user) {

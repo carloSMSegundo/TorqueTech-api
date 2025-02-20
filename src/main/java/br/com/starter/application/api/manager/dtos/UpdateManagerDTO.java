@@ -8,12 +8,8 @@ import java.time.LocalDate;
 
 @Data
 public class UpdateManagerDTO {
-    @Email(message = "O username deve ser um email válido")
-    @NotBlank(message = "O email é obrigatório")
     private String username;
-    @NotBlank(message = "A senha é obrigatória")
     private String password;
-
     private String name;
     private String document;
     private String phone;

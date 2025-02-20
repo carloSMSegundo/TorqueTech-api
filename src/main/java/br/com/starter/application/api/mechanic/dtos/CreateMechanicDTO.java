@@ -9,10 +9,7 @@ import java.time.LocalDate;
 
 @Data
 public class CreateMechanicDTO {
-    @Email(message = "O username deve ser um email válido")
-    @NotBlank(message = "O email é obrigatório")
     private String username;
-    @NotBlank(message = "A senha é obrigatória")
     private String password;
 
     private String name;

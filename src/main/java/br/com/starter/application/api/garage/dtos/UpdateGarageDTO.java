@@ -13,14 +13,8 @@ import java.util.UUID;
 public class UpdateGarageDTO {
     private String name;
     private String cnpj;
-
-    @Email(message = "O username deve ser um email válido")
-    @NotBlank(message = "O email é obrigatório")
     private String username;
-    @NotBlank(message = "A senha é obrigatória")
     private String password;
-
-    @NotBlank(message = "O nome é obrigatório")
     private String ownerName;
     private UUID ownerId;
     private String document;

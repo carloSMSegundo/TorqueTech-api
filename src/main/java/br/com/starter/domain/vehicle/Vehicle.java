@@ -2,6 +2,7 @@ package br.com.starter.domain.vehicle;
 
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.vehicleType.VehicleType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,13 +28,14 @@ public class Vehicle {
     private String licensePlate;
     private String color;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "vehicle_type_id", foreignKey = @ForeignKey(name = "fk_vehicle_vehicle_type"))
-    private VehicleType vehicleType;  // Associa o tipo de veículo
+    private VehicleType vehicleType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_vehicle_customer"))
-    private Customer customer;  // Associa o cliente que possui o veículo
+    @JsonBackReference
+    private Customer customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();

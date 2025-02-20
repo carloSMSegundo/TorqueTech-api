@@ -18,10 +18,12 @@
         SELECT c FROM Customer c
         WHERE c.owner.status = :status
         AND (
-            :query IS NULL
-            OR LOWER(c.profile.name) LIKE %:query%
+        :query IS NULL
+        OR LOWER(c.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
+        OR LOWER(c.owner.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
+
         Page<Customer> findPageByStatusAndProfileName(
                 @Param("query") String query,
                 @Param("status") UserStatus status,

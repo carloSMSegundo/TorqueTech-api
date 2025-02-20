@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,25 +64,26 @@ public class CreateCustomerUseCase {
 
         customer.setOwner(owner);
 
-        if (request.getVehicles() != null && !request.getVehicles().isEmpty()) {
-            List<Vehicle> vehicles = request.getVehicles().stream().map(vehicleRequest -> {
-                Vehicle vehicle = new Vehicle();
-                vehicle.setLicensePlate(vehicleRequest.getLicensePlate());
-                vehicle.setColor(vehicleRequest.getColor());
+        List<Vehicle> vehicles = Optional.ofNullable(request.getVehicles())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(vehicleRequest -> {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setLicensePlate(vehicleRequest.getLicensePlate());
+                    vehicle.setColor(vehicleRequest.getColor());
 
-                VehicleType vehicleType = vehicleService.getVehicleTypeById(vehicleRequest.getVehicleTypeId())
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Tipo de veículo não encontrado com o ID: " + vehicleRequest.getVehicleTypeId()));
+                    VehicleType vehicleType = vehicleService.getVehicleTypeById(vehicleRequest.getVehicleTypeId())
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                    "Tipo de veículo não encontrado com o ID: " + vehicleRequest.getVehicleTypeId()));
 
-                vehicle.setVehicleType(vehicleType);
-                vehicle.setCustomer(customer); // Associa o veículo ao cliente
-                return vehicle;
-            }).collect(Collectors.toList());
+                    vehicle.setVehicleType(vehicleType);
+                    vehicle.setCustomer(customer);
+                    return vehicle;
+                })
+                .collect(Collectors.toList());
 
-            customer.setVehicles(vehicles);
-        } else {
-            customer.setVehicles(List.of());
-        }
+        customer.setVehicles(vehicles);
+
 
 
         return Optional.ofNullable(customerService.save(customer));

@@ -1,8 +1,12 @@
 package br.com.starter.domain.vehicle;
 
+import br.com.starter.domain.garage.Garage;
+import br.com.starter.domain.user.UserStatus;
 import br.com.starter.domain.vehicleType.VehicleType;
 import br.com.starter.domain.vehicleType.VehicleTypeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VehicleService {
     private final VehicleRepository vehicleRepository;
-    private final VehicleTypeRepository vehicleTypeRepository;  // Para obter o tipo de veículo
+    private final VehicleTypeRepository vehicleTypeRepository;
+
 
     public Vehicle save(Vehicle vehicle) {
         if (vehicle.getVehicleType() != null && vehicle.getVehicleType().getId() != null) {
@@ -38,5 +43,20 @@ public class VehicleService {
     public Optional<VehicleType> getVehicleTypeById(UUID vehicleTypeId) {
         return vehicleTypeRepository.findById(vehicleTypeId);
     }
+
+    public Page<Vehicle> getPageByLicensePlate(
+            String licensePlate,
+            Pageable pageable
+    ) {
+        return vehicleRepository.findPageByLicensePlate(
+                licensePlate,
+                pageable
+        );
+    }
+
+
+
+
+
 
 }

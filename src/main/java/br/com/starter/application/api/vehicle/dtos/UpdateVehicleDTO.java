@@ -6,10 +6,9 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class CreateVehicleDTO {
+public class UpdateVehicleDTO {
     @NotBlank(message = "A placa do veiculo é obrigatória!")
     private String licensePlate;
     @NotBlank(message = "A cor do veiculo é obrigatória!")
     private String color;
-    private UUID vehicleTypeId;
 }

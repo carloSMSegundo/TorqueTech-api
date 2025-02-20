@@ -6,6 +6,7 @@ import br.com.starter.domain.user.User;
 import br.com.starter.domain.user.UserStatus;
 import br.com.starter.domain.vehicle.Vehicle;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,5 +42,6 @@ public class Customer {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Vehicle> vehicles;
 }

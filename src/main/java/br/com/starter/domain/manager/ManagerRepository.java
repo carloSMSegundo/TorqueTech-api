@@ -25,7 +25,7 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
             :query IS NULL
             OR LOWER(manager.user.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
         )
-    """)
+    """) //Entender esse parametro para usar em vehicleRepository
     Page<Manager> findPageByStatusAndNames(
             @Param("garageId") UUID garageId,
             @Param("query") String query,

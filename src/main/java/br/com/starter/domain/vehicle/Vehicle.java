@@ -4,6 +4,7 @@ import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.vehicleType.VehicleType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -35,6 +36,7 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_vehicle_customer"))
     @JsonBackReference
+    @JsonIgnore
     private Customer customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

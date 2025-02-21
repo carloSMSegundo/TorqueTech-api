@@ -1,5 +1,6 @@
 package br.com.starter.domain.customer;
 
+import br.com.starter.domain.manager.Manager;
 import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,10 @@ public class CustomerService {
         PageRequest pageable = PageRequest.of(page, size);
 
         return customerRepository.findPageByStatusAndProfileName(query, status, pageable);
+    }
+
+    public Optional<Customer> getById(UUID id) {
+        return customerRepository.findById(id);
     }
 
     public Optional<Customer> findByIdWithVehicles(UUID id) {

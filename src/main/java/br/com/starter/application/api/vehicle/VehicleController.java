@@ -4,10 +4,7 @@ import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.vehicle.dtos.CreateVehicleDTO;
 import br.com.starter.application.api.vehicle.dtos.UpdateVehicleDTO;
-import br.com.starter.application.useCase.vehicle.CreateVehicleUseCase;
-import br.com.starter.application.useCase.vehicle.GetPageVehicleUseCase;
-import br.com.starter.application.useCase.vehicle.GetVehicleUseCase;
-import br.com.starter.application.useCase.vehicle.UpdateVehicleUseCase;
+import br.com.starter.application.useCase.vehicle.*;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,7 @@ public class VehicleController {
     private final CreateVehicleUseCase createVehicleUseCase;
     private final GetPageVehicleUseCase getPageVehicleUseCase;
     private final GetVehicleUseCase getVehicleUseCase;
+    private final GetPageVehicleByCustomerUseCase getPageVehicleByCustomerUseCase;
     private final UpdateVehicleUseCase updateVehicleUseCase;
 
     @PostMapping
@@ -61,6 +59,20 @@ public class VehicleController {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
                         getPageVehicleUseCase.handler(page, request, userAuthentication.getUser())
+                )
+        );
+    }
+
+    @PostMapping("/customer/{customerId}/{page}")
+    public ResponseEntity<?> page(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID customerId,
+            @PathVariable Integer page,
+            @RequestBody GetPageRequest request
+    ) {
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        getPageVehicleByCustomerUseCase.handler(customerId, page, request, userAuthentication.getUser())
                 )
         );
     }

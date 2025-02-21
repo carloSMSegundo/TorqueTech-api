@@ -32,10 +32,6 @@ public class VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    public List<Vehicle> getAll() {
-        return vehicleRepository.findAll();
-    }
-
     public Optional<Vehicle> getById(UUID id) {
         return vehicleRepository.findById(id);
     }
@@ -54,8 +50,14 @@ public class VehicleService {
         );
     }
 
-
-
+    public Page<Vehicle> findByCustomerAndGarage(
+            UUID customerId,
+            UUID garageId,
+            String licensePlate,
+            Pageable pageable
+    ) {
+        return vehicleRepository.findByCustomerAndGarage(customerId, garageId, licensePlate, pageable);
+    }
 
 
 

@@ -29,7 +29,7 @@ public class VehicleController {
     private final GetVehicleUseCase getVehicleUseCase;
     private final GetPageVehicleByCustomerUseCase getPageVehicleByCustomerUseCase;
     private final UpdateVehicleUseCase updateVehicleUseCase;
-    private final CustomerService customerService;
+
 
     @PostMapping
     public ResponseEntity<?> create(

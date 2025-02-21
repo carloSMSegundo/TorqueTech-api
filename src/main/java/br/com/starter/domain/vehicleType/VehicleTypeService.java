@@ -1,5 +1,6 @@
 package br.com.starter.domain.vehicleType;
 
+import br.com.starter.domain.vehicle.Vehicle;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,10 @@ public class VehicleTypeService {
     }
 
     public Optional<VehicleType> findById(UUID id) {
+        return vehicleTypeRepository.findById(id);
+    }
+
+    public Optional<VehicleType> getById(UUID id) {
         return vehicleTypeRepository.findById(id);
     }
 

@@ -1,15 +1,12 @@
 package br.com.starter.application.api.vehicleType;
 
 import br.com.starter.application.api.common.ResponseDTO;
-import br.com.starter.application.api.vehicle.dtos.UpdateVehicleDTO;
-import br.com.starter.application.api.vehicleType.dto.CreateVehicleTypeDTO;
-import br.com.starter.application.api.vehicleType.dto.UpdateVehicleTypeDTO;
-import br.com.starter.application.useCase.vehicle.GetVehicleUseCase;
+import br.com.starter.application.api.vehicleType.dtos.CreateVehicleTypeDTO;
+import br.com.starter.application.api.vehicleType.dtos.UpdateVehicleTypeDTO;
 import br.com.starter.application.useCase.vehicleType.CreateVehicleTypeUseCase;
 import br.com.starter.application.useCase.vehicleType.GetVehicleTypeUseCase;
 import br.com.starter.application.useCase.vehicleType.UpdateVehicleTypeUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
-import br.com.starter.domain.vehicleType.VehicleType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

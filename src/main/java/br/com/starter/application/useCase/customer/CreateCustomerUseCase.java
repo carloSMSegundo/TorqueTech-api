@@ -56,7 +56,7 @@ public class CreateCustomerUseCase {
 
         if (request.getAddress() != null) {
             var address = mapper.map(request.getAddress(), Address.class);
-            garage.setAddress(address);
+            profile.setAddress(address);
         }
 
         customer.setProfile(profile);
@@ -84,7 +84,6 @@ public class CreateCustomerUseCase {
                 .collect(Collectors.toList());
 
         customer.setVehicles(vehicles);
-
 
 
         return Optional.ofNullable(customerService.save(customer));

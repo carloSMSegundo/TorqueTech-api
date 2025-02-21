@@ -1,6 +1,6 @@
 package br.com.starter.application.useCase.vehicleType;
 
-import br.com.starter.application.api.vehicleType.dto.UpdateVehicleTypeDTO;
+import br.com.starter.application.api.vehicleType.dtos.UpdateVehicleTypeDTO;
 import br.com.starter.domain.vehicleType.VehicleType;
 import br.com.starter.domain.vehicleType.VehicleTypeService;
 import jakarta.transaction.Transactional;

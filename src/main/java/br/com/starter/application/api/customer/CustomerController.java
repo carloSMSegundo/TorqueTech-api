@@ -2,7 +2,9 @@ package br.com.starter.application.api.customer;
 
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.customer.dtos.CreateCustomerDTO;
+import br.com.starter.application.api.customer.dtos.UpdateCustomerDTO;
 import br.com.starter.application.useCase.customer.CreateCustomerUseCase;
+import br.com.starter.application.useCase.customer.UpdateCustomerUseCase;
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.customer.CustomerService;
 import br.com.starter.domain.user.CustomUserDetails;
@@ -25,6 +27,7 @@ public class CustomerController {
 
     private final CreateCustomerUseCase createCustomerUseCase;
     private final CustomerService customerService;
+    private final UpdateCustomerUseCase updateCustomerUseCase;
 
     @PostMapping
     public ResponseEntity<?> saveCustomer(
@@ -37,6 +40,20 @@ public class CustomerController {
                 )
         );
     }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity<?> update(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody UpdateCustomerDTO request,
+            @PathVariable UUID customerId
+    ) {
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        updateCustomerUseCase.handler(customerId, request)
+                )
+        );
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {

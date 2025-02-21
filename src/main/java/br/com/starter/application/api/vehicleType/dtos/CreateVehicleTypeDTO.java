@@ -1,4 +1,4 @@
-package br.com.starter.application.api.vehicleType.dto;
+package br.com.starter.application.api.vehicleType.dtos;
 
 import br.com.starter.domain.vehicleType.VehicleTypeCategory;
 import lombok.Data;

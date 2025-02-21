@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS vehicle_types (
     id UUID PRIMARY KEY NOT NULL,
     model VARCHAR(255) NOT NULL,
     brand VARCHAR(255) NOT NULL,
-    year VARCHAR(4) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    year VARCHAR(10) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

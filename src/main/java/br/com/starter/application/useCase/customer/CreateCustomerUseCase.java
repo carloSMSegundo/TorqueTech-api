@@ -55,7 +55,6 @@ public class CreateCustomerUseCase {
         profile.setBirthDate(request.getBirthDate());
 
         if (request.getAddress() != null) {
-            // Clona informações de endereço
             var address = mapper.map(request.getAddress(), Address.class);
             garage.setAddress(address);
         }

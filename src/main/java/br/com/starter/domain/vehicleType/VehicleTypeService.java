@@ -36,6 +36,10 @@ public class VehicleTypeService {
         return null;
     }
 
+    public Optional<VehicleType> getVehicleTypeById(UUID vehicleTypeId) {
+        return vehicleTypeRepository.findById(vehicleTypeId);
+    }
+
     public Page<VehicleType> listVehicleTypes(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
 

@@ -32,4 +32,6 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
             @Param("status") UserStatus status,
             Pageable pageable
     );
+
+    // findByIdAndGarageId
 }

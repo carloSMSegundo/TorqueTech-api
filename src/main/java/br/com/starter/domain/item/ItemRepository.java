@@ -25,5 +25,4 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
         @Param("status") ItemStatus status,
         @Param("query") String query
     );
-
 }

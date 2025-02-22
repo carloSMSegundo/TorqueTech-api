@@ -21,6 +21,9 @@ public class Local {
     private String name;
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private LocalStatus status = LocalStatus.ACTIVE;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "garage_id", nullable = false)

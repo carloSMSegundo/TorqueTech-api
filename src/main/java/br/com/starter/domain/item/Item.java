@@ -22,6 +22,9 @@ public class Item {
     private String category;
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private ItemStatus status = ItemStatus.ACTIVE;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "garage_id", nullable = false)

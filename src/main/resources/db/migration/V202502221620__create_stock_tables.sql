@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS item (
     category VARCHAR(100) NOT NULL,
     description TEXT,
     garage_id UUID NOT NULL,
+    status VARCHAR(50) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_item_garage FOREIGN KEY (garage_id) REFERENCES garage(id)
 );
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS local (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     garage_id UUID NOT NULL,
+    status VARCHAR(50) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_local_garage FOREIGN KEY (garage_id) REFERENCES garage(id)
 );

@@ -1,4 +1,4 @@
-package br.com.starter.domain.item;
+package br.com.starter.domain.local;
 
 import br.com.starter.domain.garage.Garage;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,15 +11,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "item")
+@Table(name = "local")
 @Getter
 @Setter
-public class Item {
+public class Local {
     @Id
     private UUID id = UUID.randomUUID();
 
     private String name;
-    private String category;
     private String description;
 
     @JsonIgnore

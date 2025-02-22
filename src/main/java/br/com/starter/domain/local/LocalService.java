@@ -20,6 +20,10 @@ public class LocalService {
     }
 
     public List<Local> findAllByGarageAndQuery(Garage garage, String query) {
-        return localRepository.findAllByGarageAndQuery(garage.getId(), query);
+        return localRepository.findAllByGarageAndQuery(
+            garage.getId(),
+            LocalStatus.ACTIVE,
+            query
+        );
     }
 }

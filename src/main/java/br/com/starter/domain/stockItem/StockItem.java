@@ -29,7 +29,7 @@ public class StockItem {
     private Item item;
 
     @ManyToOne
-    @JoinColumn(name = "local_id", nullable = false)
+    @JoinColumn(name = "local_id", nullable = true)
     private Local local;
 
     @JsonIgnore

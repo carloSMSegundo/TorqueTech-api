@@ -1,5 +1,8 @@
 package br.com.starter.domain.item;
 
+import br.com.starter.domain.garage.Garage;
+import br.com.starter.domain.local.Local;
+import br.com.starter.domain.local.LocalStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +25,13 @@ public class ItemService {
 
     public Optional<Item> getById(UUID id) {
         return itemRepository.findById(id);
+    }
+
+    public List<Item> findAllByGarageAndQuery(Garage garage, String query) {
+        return itemRepository.findAllByGarageAndQuery(
+            garage.getId(),
+            ItemStatus.ACTIVE,
+            query
+        );
     }
 }

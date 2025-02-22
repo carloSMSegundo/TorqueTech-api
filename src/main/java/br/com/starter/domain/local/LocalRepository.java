@@ -14,6 +14,7 @@ public interface LocalRepository extends JpaRepository<Local, UUID> {
     @Query("""
         SELECT l FROM Local l
         WHERE l.garage.id = :garageId
+        AND l.status = :status
         AND (
             :query IS NULL
             OR LOWER(l.name) LIKE LOWER(CONCAT('%', :query, '%'))
@@ -21,6 +22,7 @@ public interface LocalRepository extends JpaRepository<Local, UUID> {
     """)
     List<Local>  findAllByGarageAndQuery(
         @Param("garageId") UUID garageId,
+        @Param("status") LocalStatus status,
         @Param("query") String query
     );
 }

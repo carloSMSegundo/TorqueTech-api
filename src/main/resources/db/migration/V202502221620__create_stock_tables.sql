@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS stock_item (
     acquisition_price BIGINT,
     quantity INTEGER,
     item_id UUID NOT NULL,
-    local_id UUID NOT NULL,
+    local_id UUID NULL,
     garage_id UUID NOT NULL,
     acquisition_at DATE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

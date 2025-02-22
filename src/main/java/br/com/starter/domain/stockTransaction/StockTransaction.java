@@ -3,6 +3,7 @@ package br.com.starter.domain.stockTransaction;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.stockItem.StockItem;
 import br.com.starter.domain.user.User;
+import br.com.starter.domain.workOrder.WorkOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -29,6 +30,10 @@ public class StockTransaction {
     @ManyToOne
     @JoinColumn(name = "stock_item_id", nullable = false)
     private StockItem stockItem;
+
+    @ManyToOne
+    @JoinColumn(name = "work_order_id", nullable = false)
+    private WorkOrder WorkOrder;
 
     @JsonIgnore
     @ManyToOne

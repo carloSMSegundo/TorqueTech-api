@@ -82,6 +82,7 @@ CREATE TABLE privileges_on_users (
 -- Inserir roles padrão na tabela roles
 INSERT INTO roles (id, name, created_at)
 VALUES
-    (gen_random_uuid(), 'ROLE_USER', NOW()),
-    (gen_random_uuid(), 'ROLE_MANAGER', NOW()),
-    (gen_random_uuid(), 'ROLE_ADMIN', NOW());
+    ('9a0499e2-7ee7-4077-8bec-2433bc0c5a73', 'ROLE_USER', NOW()),
+    ('1e883ae5-662b-460f-a18f-512088c186ae', 'ROLE_MANAGER', NOW()),
+    ('441606b1-b1f5-4d6a-9c69-7749ae48fdbc', 'ROLE_ADMIN', NOW()),
+    ('7fcb9fe2-7d3d-43f1-8f4e-9b63fd902b28', 'ROLE_SUPER_ADMIN', NOW());

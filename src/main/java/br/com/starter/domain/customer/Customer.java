@@ -11,7 +11,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -38,10 +40,9 @@ public class Customer {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Vehicle> vehicles = new HashSet<>();
+
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private List<Vehicle> vehicles;
 }

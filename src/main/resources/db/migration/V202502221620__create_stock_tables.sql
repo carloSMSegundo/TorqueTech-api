@@ -1,17 +1,28 @@
 -- V2__create_stock_tables.sql
 
+-- Tabela Item
+CREATE TABLE IF NOT EXISTS item (
+    id UUID PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    description TEXT,
+    garage_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_item_garage FOREIGN KEY (garage_id) REFERENCES garage(id)
+);
+
 -- Tabela Local
-CREATE TABLE local (
+CREATE TABLE IF NOT EXISTS local (
     id UUID PRIMARY KEY NOT NULL,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255),
     garage_id UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_local_garage FOREIGN KEY (garage_id) REFERENCES garage(id) ON DELETE SET NULL
+    CONSTRAINT fk_local_garage FOREIGN KEY (garage_id) REFERENCES garage(id)
 );
 
 -- Tabela StockItem
-CREATE TABLE stock_item (
+CREATE TABLE IF NOT EXISTS stock_item (
     id UUID PRIMARY KEY NOT NULL,
     acquisition_price BIGINT,
     quantity INTEGER,
@@ -26,7 +37,7 @@ CREATE TABLE stock_item (
 );
 
 -- Tabela StockTransaction
-CREATE TABLE stock_transaction (
+CREATE TABLE IF NOT EXISTS stock_transaction (
     id UUID PRIMARY KEY NOT NULL,
     price BIGINT,
     quantity INTEGER,
@@ -34,9 +45,11 @@ CREATE TABLE stock_transaction (
     stock_item_id UUID NOT NULL,
     garage_id UUID NOT NULL,
     owner_id UUID NOT NULL,
+    work_order_id UUID NULL,
     transaction_date TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_stock_transaction_stock_item FOREIGN KEY (stock_item_id) REFERENCES stock_item(id),
     CONSTRAINT fk_stock_transaction_garage FOREIGN KEY (garage_id) REFERENCES garage(id),
-    CONSTRAINT fk_stock_transaction_owner FOREIGN KEY (owner_id) REFERENCES users(id)
+    CONSTRAINT fk_stock_transaction_owner FOREIGN KEY (owner_id) REFERENCES users(id),
+    CONSTRAINT fk_stock_transaction_work_order FOREIGN KEY (work_order_id) REFERENCES work_order(id)
 );

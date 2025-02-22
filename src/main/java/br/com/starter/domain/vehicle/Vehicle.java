@@ -33,10 +33,9 @@ public class Vehicle {
     @JoinColumn(name = "vehicle_type_id", foreignKey = @ForeignKey(name = "fk_vehicle_vehicle_type"))
     private VehicleType vehicleType;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_vehicle_customer"))
-    @JsonBackReference
-    @JsonIgnore
     private Customer customer;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

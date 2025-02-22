@@ -1,13 +1,17 @@
 package br.com.starter.domain.workOrder;
 
 
+import br.com.starter.domain.stockTransaction.StockTransaction;
 import br.com.starter.domain.work.Work;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +22,18 @@ public class WorkOrder {
     @Id
     private UUID id = UUID.randomUUID();
 
+    private String title;
+    private String description;
+    private String note;
+    private Long cost;
+
+    @Enumerated(EnumType.STRING)
+    private WorkOrderStatus status;
+
+    @OneToMany(mappedBy = "WorkOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<StockTransaction> items = new HashSet<>();
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "work_id", nullable = false)
     private Work work;
@@ -29,13 +45,6 @@ public class WorkOrder {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expectedAt;
 
-    @Enumerated(EnumType.STRING)
-    private WorkOrderStatus status; // a ver se comeca com alguma por padrão
-
-    private String title;
-    private String description;
-    private String note;
-    private Long cost;
-
-    // private StockTransaction items; // adicionar depois
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

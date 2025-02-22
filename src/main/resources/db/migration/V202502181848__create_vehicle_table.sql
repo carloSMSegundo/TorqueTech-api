@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS vehicle (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_vehicle_type FOREIGN KEY (vehicle_type_id) REFERENCES vehicle_types(id) ON DELETE SET NULL,
     CONSTRAINT fk_vehicle_customer FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE
-    );
+);

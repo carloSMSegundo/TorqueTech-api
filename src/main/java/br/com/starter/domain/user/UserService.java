@@ -59,14 +59,8 @@ public class UserService {
 
     @Transactional
     public User create(UserRegistrationRequest user) {
-        if (user.getDocument() != null) {
-            String document = user.getDocument() ;
-            if (document.length() == 11 && !new DocumentValidatorUtil().checkCpf(document)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
-            } else if (document.length() == 14 && !new DocumentValidatorUtil().checkCnpj(document)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
-            }
-        }
+        if (user.getDocument() != null)
+            documentValidate(user.getDocument());
 
         User newUser = new User();
 
@@ -103,6 +97,14 @@ public class UserService {
         }
 
         return userRepository.save(newUser);
+    }
+
+    public static void documentValidate(String document) {
+        if (document.length() == 11 && !new DocumentValidatorUtil().checkCpf(document)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
+        } else if (document.length() == 14 && !new DocumentValidatorUtil().checkCnpj(document)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento inválido!");
+        }
     }
 
     public User getUserById (UUID userId) {

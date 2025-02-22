@@ -12,6 +12,7 @@ import br.com.starter.domain.user.UserService;  // Serviço para buscar o owner
 import br.com.starter.domain.vehicle.Vehicle;
 import br.com.starter.domain.vehicle.VehicleService;
 import br.com.starter.domain.vehicleType.VehicleType;
+import br.com.starter.infrastructure.services.utils.DocumentValidatorUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,11 +40,14 @@ public class CreateCustomerUseCase {
         ModelMapper mapper = new ModelMapper();
 
         Garage garage = garageService.getByUser(owner).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "O usuário não possui uma oficina registrada"
-                )
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "O usuário não possui uma oficina registrada!"
+            )
         );
+
+        if (request.getDocument() != null)
+            UserService.documentValidate(request.getDocument());
 
         Customer customer = new Customer();
         customer.setStatus(request.getStatus());
@@ -60,31 +65,31 @@ public class CreateCustomerUseCase {
         }
 
         customer.setProfile(profile);
-
         customer.setGarage(garage);
-
         customer.setOwner(owner);
 
-        List<Vehicle> vehicles = Optional.ofNullable(request.getVehicles())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(vehicleRequest -> {
-                    Vehicle vehicle = new Vehicle();
-                    vehicle.setLicensePlate(vehicleRequest.getLicensePlate());
-                    vehicle.setColor(vehicleRequest.getColor());
+        Set<Vehicle> vehicles = Optional.ofNullable(request.getVehicles())
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(vehicleRequest -> {
+                VehicleType vehicleType = vehicleService.getVehicleTypeById(vehicleRequest.getVehicleTypeId())
+                    .orElseThrow(() ->
+                        new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Tipo de veículo não encontrado!"
+                        )
+                    );
 
-                    VehicleType vehicleType = vehicleService.getVehicleTypeById(vehicleRequest.getVehicleTypeId())
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                    "Tipo de veículo não encontrado com o ID: " + vehicleRequest.getVehicleTypeId()));
-
-                    vehicle.setVehicleType(vehicleType);
-                    vehicle.setCustomer(customer);
-                    return vehicle;
-                })
-                .collect(Collectors.toList());
+                Vehicle vehicle = new Vehicle();
+                vehicle.setLicensePlate(vehicleRequest.getLicensePlate());
+                vehicle.setColor(vehicleRequest.getColor());
+                vehicle.setVehicleType(vehicleType);
+                vehicle.setCustomer(customer);
+                return vehicle;
+            })
+            .collect(Collectors.toSet());
 
         customer.setVehicles(vehicles);
-
 
         return Optional.ofNullable(customerService.save(customer));
     }

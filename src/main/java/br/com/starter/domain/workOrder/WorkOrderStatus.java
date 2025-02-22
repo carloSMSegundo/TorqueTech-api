@@ -6,5 +6,6 @@ public enum WorkOrderStatus {
     WAITING_PARTS,
     ON_HOLD,
     COMPLETED,
-    OVERDUE
+    OVERDUE,
+    CANCELLED,
 }

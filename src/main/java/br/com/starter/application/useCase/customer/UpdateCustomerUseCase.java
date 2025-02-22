@@ -26,10 +26,10 @@ public class UpdateCustomerUseCase {
         ModelMapper mapper = new ModelMapper();
 
         Customer customer = customerService.getById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Cliente não encontrado com o ID: " + customerId
-                ));
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Cliente não encontrado!"
+            ));
 
         // Atualizando o nome do customer com o nome vindo do request
         customer.setName(request.getName());  // Correção aqui!
@@ -42,9 +42,18 @@ public class UpdateCustomerUseCase {
         profile.setPhone(request.getPhone());
         profile.setBirthDate(request.getBirthDate());
 
-        // Se o endereço foi fornecido, atualiza o endereço do profile
-        if (request.getAddress() != null) {
-            var address = mapper.map(request.getAddress(), Address.class);
+        if(request.getAddress() != null) {
+            Address address = profile.getAddress() != null
+                ? profile.getAddress()
+                : new Address();
+
+            address.setStreet(request.getAddress().getStreet());
+            address.setNumber(request.getAddress().getNumber());
+            address.setCep(request.getAddress().getCep());
+            address.setCity(request.getAddress().getCity());
+            address.setState(request.getAddress().getState());
+            address.setProvince(request.getAddress().getProvince());
+
             profile.setAddress(address);
         }
 

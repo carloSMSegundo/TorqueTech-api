@@ -34,7 +34,7 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     """)
     Set<UUID> findByOwnerFilter(
         @Param("garageId") UUID garageId,
-        @Param("ownerId") Set<UUID> ownerId
+        @Param("ownerId") UUID ownerId
     );
 
     @Query("""
@@ -48,14 +48,14 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     );
 
     @Query("""
-        SELECT s FROM StockTransaction s
+        SELECT distinct s.id  FROM StockTransaction s
         WHERE s.garage.id = :garageId
         AND (
             :query IS NULL
             OR LOWER(s.stockItem.item) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
-    List<StockTransaction> findByItemNameFilters(
+    Set<UUID> findByItemNameFilters(
         @Param("garageId") UUID garageId,
         @Param("query") String query
     );

@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário sem acesso ao sistema!");
         }
 
-        return new CustomUserDetails(usetEntity);
+        return new CustomUserDetails(usetEntity, garage);
     }
 }
 

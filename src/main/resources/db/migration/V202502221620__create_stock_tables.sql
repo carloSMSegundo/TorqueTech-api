@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS local (
 CREATE TABLE IF NOT EXISTS stock_item (
     id UUID PRIMARY KEY NOT NULL,
     acquisition_price BIGINT,
+    price BIGINT,
     quantity INTEGER,
     item_id UUID NOT NULL,
     local_id UUID NULL,
@@ -43,7 +44,9 @@ CREATE TABLE IF NOT EXISTS stock_transaction (
     id UUID PRIMARY KEY NOT NULL,
     price BIGINT,
     quantity INTEGER,
-    transaction_type VARCHAR(50),
+    category VARCHAR(50),
+    status VARCHAR(50),
+    type VARCHAR(50),
     stock_item_id UUID NOT NULL,
     garage_id UUID NOT NULL,
     owner_id UUID NOT NULL,

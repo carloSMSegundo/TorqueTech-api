@@ -1,16 +1,13 @@
 package br.com.starter.domain.stockTransaction;
 
-import br.com.starter.application.api.stockTransaction.dtos.GetStockTransactionPage;
+import br.com.starter.application.api.stockTransaction.dtos.GetPageStockTransactionRequest;
 import br.com.starter.domain.garage.Garage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +16,10 @@ public class StockTransactionService {
 
     public StockTransaction save(StockTransaction stockTransaction) {
         return stockTransactionRepository.save(stockTransaction);
+    }
+
+    public Optional<StockTransaction> getByIdAndGarageId(UUID id, UUID garageId) {
+        return stockTransactionRepository.findByIdAndGarageId(garageId, id);
     }
 
     public List<StockTransaction> getAll() {
@@ -39,7 +40,7 @@ public class StockTransactionService {
 
     public Set<UUID> getPageFilterIds (
         Garage garage,
-        GetStockTransactionPage request
+        GetPageStockTransactionRequest request
     ) {
         Set<UUID> mapper = null;
 

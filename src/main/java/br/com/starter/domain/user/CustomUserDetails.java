@@ -1,5 +1,6 @@
 package br.com.starter.domain.user;
 
+import br.com.starter.domain.garage.Garage;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,11 +9,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
-
+import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
+    private final Optional<Garage> garage;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -21,6 +23,9 @@ public class CustomUserDetails implements UserDetails {
     
     public User getUser() {
         return user;
+    }
+    public Optional<Garage> getGarage() {
+        return garage;
     }
 
     @Override

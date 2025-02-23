@@ -22,7 +22,8 @@ public class StockItem {
     private UUID id = UUID.randomUUID();
 
     private Long acquisitionPrice;
-    private Integer quantity;
+    private Long price;
+    private Integer quantity = 0;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

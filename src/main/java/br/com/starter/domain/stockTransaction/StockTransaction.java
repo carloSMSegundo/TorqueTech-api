@@ -25,7 +25,13 @@ public class StockTransaction {
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
-    private TransactionType transactionType;
+    private TransactionCategory category;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status = TransactionStatus.CREATED;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
 
     @ManyToOne
     @JoinColumn(name = "stock_item_id", nullable = false)

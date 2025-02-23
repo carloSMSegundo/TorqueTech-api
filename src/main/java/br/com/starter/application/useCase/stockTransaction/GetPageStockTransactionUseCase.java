@@ -1,6 +1,6 @@
 package br.com.starter.application.useCase.stockTransaction;
 
-import br.com.starter.application.api.stockTransaction.dtos.GetStockTransactionPage;
+import br.com.starter.application.api.stockTransaction.dtos.GetPageStockTransactionRequest;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.stockTransaction.StockTransactionService;
@@ -21,7 +21,7 @@ public class GetPageStockTransactionUseCase {
 
     public Optional<?> handler(
         User user,
-        GetStockTransactionPage request,
+        GetPageStockTransactionRequest request,
         Integer page
     ) {
         Garage garage = garageService.getByUser(user).orElseThrow(() ->

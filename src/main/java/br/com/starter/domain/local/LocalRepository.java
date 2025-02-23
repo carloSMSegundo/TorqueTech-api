@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -24,5 +25,15 @@ public interface LocalRepository extends JpaRepository<Local, UUID> {
         @Param("garageId") UUID garageId,
         @Param("status") LocalStatus status,
         @Param("query") String query
+    );
+
+    @Query("""
+        SELECT l FROM Local l
+        WHERE l.garage.id = :garageId
+        AND l.id = :id
+    """)
+    Optional<Local> findByIdAndGarageId(
+        @Param("garageId") UUID garageId,
+        @Param("id") UUID id
     );
 }

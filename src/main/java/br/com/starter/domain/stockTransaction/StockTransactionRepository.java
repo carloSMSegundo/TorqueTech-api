@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +17,16 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
 
    List<StockTransaction> findAllById(Set<UUID> ids);
    Page<StockTransaction> findAllById(Set<UUID> ids, Pageable pageable);
+
+    @Query("""
+        SELECT s.id FROM StockTransaction s
+        WHERE s.garage.id = :garageId
+        AND s.id in :id
+    """)
+    Optional<StockTransaction> findByIdAndGarageId(
+        @Param("garageId") UUID garageId,
+        @Param("id") UUID id
+    );
 
     @Query("""
         SELECT distinct s.id FROM StockTransaction s
@@ -40,7 +51,7 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     @Query("""
         SELECT distinct s.id FROM StockTransaction s
         WHERE s.garage.id = :garageId
-        AND s.transactionType = :type
+        AND s.type = :type
     """)
     Set<UUID> findBytransactionTypeFilter(
         @Param("garageId") UUID garageId,

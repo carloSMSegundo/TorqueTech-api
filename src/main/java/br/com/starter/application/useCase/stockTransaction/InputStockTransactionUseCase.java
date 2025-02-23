@@ -55,7 +55,7 @@ public class InputStockTransactionUseCase {
         ).orElse(null);
 
         if (stockItem == null) {
-            var item = itemService.getById(request.getItemId()).orElseThrow(() ->
+            var item = itemService.getById(request.getItemId(), garage).orElseThrow(() ->
                 new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Item não encontrado!"

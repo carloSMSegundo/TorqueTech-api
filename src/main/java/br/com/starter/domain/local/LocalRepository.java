@@ -1,5 +1,7 @@
 package br.com.starter.domain.local;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +27,22 @@ public interface LocalRepository extends JpaRepository<Local, UUID> {
         @Param("garageId") UUID garageId,
         @Param("status") LocalStatus status,
         @Param("query") String query
+    );
+
+    @Query("""
+        SELECT l FROM Local l
+        WHERE l.garage.id = :garageId
+        AND l.status = :status
+        AND (
+            :query IS NULL
+            OR LOWER(l.name) LIKE LOWER(CONCAT('%', :query, '%'))
+        )
+    """)
+    Page<Local> findAllByGarageAndQuery(
+        @Param("garageId") UUID garageId,
+        @Param("status") LocalStatus status,
+        @Param("query") String query,
+        Pageable pageable
     );
 
     @Query("""

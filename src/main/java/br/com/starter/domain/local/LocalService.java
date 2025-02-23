@@ -2,6 +2,8 @@ package br.com.starter.domain.local;
 
 import br.com.starter.domain.garage.Garage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,15 @@ public class LocalService {
             garage.getId(),
             LocalStatus.ACTIVE,
             query
+        );
+    }
+
+    public Page<Local> findAllByGarageAndQuery(Garage garage, String query, Pageable pageable) {
+        return localRepository.findAllByGarageAndQuery(
+            garage.getId(),
+            LocalStatus.ACTIVE,
+            query,
+            pageable
         );
     }
 }

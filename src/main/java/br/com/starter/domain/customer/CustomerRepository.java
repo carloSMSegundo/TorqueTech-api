@@ -8,6 +8,7 @@
     import org.springframework.data.jpa.repository.Query;
     import org.springframework.data.repository.query.Param;
 
+    import java.util.List;
     import java.util.Optional;
     import java.util.UUID;
 
@@ -15,19 +16,38 @@
         Page<Customer> findByOwner(User owner, Pageable pageable);
 
         @Query("""
-        SELECT c FROM Customer c
-        WHERE c.owner.status = :status
-        AND (
-        :query IS NULL
-        OR LOWER(c.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
-        OR LOWER(c.owner.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
-        )
-    """)
-
+            SELECT c FROM Customer c
+            WHERE c.garage.id = :garageId
+            AND c.status = :status
+            AND (
+                :query IS NULL
+                OR LOWER(c.profile.name) LIKE LOWER(CONCAT('%', :query, '%'))
+            )
+        """)
         Page<Customer> findPageByStatusAndProfileName(
-                @Param("query") String query,
-                @Param("status") UserStatus status,
-                Pageable pageable
+            @Param("garageId") UUID garageId,
+            @Param("query") String query,
+            @Param("status") UserStatus status,
+            Pageable pageable
         );
 
+        @Query("""
+            SELECT c FROM Customer c
+            WHERE c.garage.id = :garageId
+            AND c.status = :status
+        """)
+        List<Customer> findAllByGarageIdAndStatus(
+            @Param("garageId") UUID garageId,
+            @Param("status") UserStatus status
+        );
+
+        @Query("""
+            SELECT c FROM Customer c
+            WHERE c.garage.id = :garageId
+            AND c.id = :customerId
+        """)
+        Optional<Customer> findAllByGarageId(
+            @Param("garageId") UUID garageId,
+            @Param("customerId") UUID customerId
+        );
     }

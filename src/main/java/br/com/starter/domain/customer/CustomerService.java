@@ -1,10 +1,12 @@
 package br.com.starter.domain.customer;
 
+import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.manager.Manager;
 import br.com.starter.domain.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,29 +23,29 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Optional<Customer> findById(UUID id) {
-        return customerRepository.findById(id);
-    }
-
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
 
-    public Page<Customer> listCustomers(String query, UserStatus status, int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
+    public Page<Customer> getPage(
+        Garage garage,
+        String query,
+        UserStatus status,
+        Pageable pageable
+    ) {
+        return customerRepository.findPageByStatusAndProfileName(garage.getId(), query, status, pageable);
+    }
 
-        return customerRepository.findPageByStatusAndProfileName(query, status, pageable);
+    public List<Customer> listCustomers(Garage garage) {
+        return customerRepository.findAllByGarageIdAndStatus(garage.getId(),  UserStatus.ACTIVE);
     }
 
     public Optional<Customer> getById(UUID id) {
         return customerRepository.findById(id);
     }
 
-    public Optional<Customer> findByIdWithVehicles(UUID id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        customer.ifPresent(c -> {
-        });
-        return customer;
+    public Optional<Customer> getByIdAndGarageId(UUID id, UUID garageId) {
+        return customerRepository.findAllByGarageId(garageId, id);
     }
 
     public Customer saveWithVehicles(Customer customer) {

@@ -4,7 +4,10 @@ import br.com.starter.application.api.customer.dtos.UpdateCustomerDTO;
 import br.com.starter.domain.address.Address;
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.customer.CustomerService;
+import br.com.starter.domain.garage.Garage;
+import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.profile.Profile;
+import br.com.starter.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,13 +22,19 @@ import java.util.UUID;
 public class UpdateCustomerUseCase {
 
     private final CustomerService customerService;
+    private final GarageService garageService;
 
-    @Transactional
-    public Customer handler(UUID customerId, UpdateCustomerDTO request) {
+    public Customer handler(User user, UUID customerId, UpdateCustomerDTO request) {
+        Garage garage = garageService.getByUser(user).orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "O usuário não possui uma oficina registrada!"
+            )
+        );
 
         ModelMapper mapper = new ModelMapper();
 
-        Customer customer = customerService.getById(customerId)
+        Customer customer = customerService.getByIdAndGarageId(customerId, garage.getId())
             .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Cliente não encontrado!"

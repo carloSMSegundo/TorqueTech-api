@@ -34,7 +34,6 @@ public class CreateCustomerUseCase {
     private final VehicleService vehicleService;
     private final GarageService garageService;
 
-    @Transactional
     public Optional<Customer> handler(CreateCustomerDTO request, User owner) {
 
         ModelMapper mapper = new ModelMapper();

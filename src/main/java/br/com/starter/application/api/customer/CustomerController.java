@@ -1,10 +1,10 @@
 package br.com.starter.application.api.customer;
 
+import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.customer.dtos.CreateCustomerDTO;
 import br.com.starter.application.api.customer.dtos.UpdateCustomerDTO;
-import br.com.starter.application.useCase.customer.CreateCustomerUseCase;
-import br.com.starter.application.useCase.customer.UpdateCustomerUseCase;
+import br.com.starter.application.useCase.customer.*;
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.customer.CustomerService;
 import br.com.starter.domain.user.CustomUserDetails;
@@ -21,61 +21,74 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/torque/api/customers")
+@RequestMapping("/torque/api/customer")
 @RequiredArgsConstructor
 public class CustomerController {
 
     private final CreateCustomerUseCase createCustomerUseCase;
-    private final CustomerService customerService;
     private final UpdateCustomerUseCase updateCustomerUseCase;
+    private final GetPageCustomerUseCase getPageCustomerUseCase;
+    private final GetAllCustomerUseCase getAllCustomerUseCase;
+    private final GetCustomerUseCase getCustomerUseCase;
 
     @PostMapping
-    public ResponseEntity<?> saveCustomer(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody CreateCustomerDTO createCustomerDTO
+    public ResponseEntity<?> create(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody CreateCustomerDTO createCustomerDTO
     ) {
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        createCustomerUseCase.handler(createCustomerDTO, userAuthentication.getUser())
-                )
+            new ResponseDTO<>(
+                createCustomerUseCase.handler(createCustomerDTO, userAuthentication.getUser())
+            )
         );
     }
 
     @PutMapping("/{customerId}")
     public ResponseEntity<?> update(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody UpdateCustomerDTO request,
-            @PathVariable UUID customerId
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody UpdateCustomerDTO request,
+        @PathVariable UUID customerId
     ) {
+        var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        updateCustomerUseCase.handler(customerId, request)
-                )
+            new ResponseDTO<>(
+                updateCustomerUseCase.handler(user, customerId, request)
+            )
         );
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
-        var customer = customerService.findById(id);
-        return customer.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{customerId}")
+    public ResponseEntity<?> get(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID customerId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+            getCustomerUseCase.handler(user, customerId)
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomers() {
-        List<Customer> customers = customerService.findAll();
-        return ResponseEntity.ok(customers);
+    public ResponseEntity<?> get(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+            getAllCustomerUseCase.handler(user)
+        );
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<Customer>> listCustomers(
-            @RequestParam(required = false) String query,
-            @RequestParam(required = false) UserStatus status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<Customer> customers = customerService.listCustomers(query, status, page, size);
-        return ResponseEntity.ok(customers);
+    @PostMapping("/page/{page}")
+    public ResponseEntity<?> page(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable Integer page,
+        @RequestBody GetPageRequest request
+    ){
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getPageCustomerUseCase.handler(user, page, request)
+            )
+        );
     }
 }

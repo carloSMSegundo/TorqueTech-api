@@ -1,8 +1,6 @@
 package br.com.starter.application.useCase.local;
 
-import br.com.starter.application.api.common.GetAllRequest;
 import br.com.starter.domain.garage.GarageService;
-import br.com.starter.domain.item.ItemService;
 import br.com.starter.domain.local.LocalService;
 import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +17,7 @@ public class GetAllILocalUseCase {
     private final GarageService garageService;
 
     public Optional<?> handler(
-        User user,
-        GetAllRequest request
+        User user
     ) {
         var garage = garageService.getByUser(user).orElseThrow(() ->
             new ResponseStatusException(
@@ -30,8 +27,7 @@ public class GetAllILocalUseCase {
         );
 
         return Optional.of(localService.findAllByGarageAndQuery(
-            garage,
-            request.getQuery()
+            garage
         ));
     }
 }

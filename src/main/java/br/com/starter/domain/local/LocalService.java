@@ -27,11 +27,10 @@ public class LocalService {
         localRepository.delete(local);
     }
 
-    public List<Local> findAllByGarageAndQuery(Garage garage, String query) {
+    public List<Local> findAllByGarageAndQuery(Garage garage) {
         return localRepository.findAllByGarageAndQuery(
             garage.getId(),
-            LocalStatus.ACTIVE,
-            query
+            LocalStatus.ACTIVE
         );
     }
 

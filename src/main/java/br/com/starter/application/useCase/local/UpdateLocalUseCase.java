@@ -1,8 +1,7 @@
 package br.com.starter.application.useCase.local;
 
-import br.com.starter.application.api.item.dtos.CreateItemRequest;
+import br.com.starter.application.api.local.dtos.CreateLocalStockRequest;
 import br.com.starter.domain.garage.GarageService;
-import br.com.starter.domain.item.ItemService;
 import br.com.starter.domain.local.LocalService;
 import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class UpdateLocalUseCase {
     public Optional<?> handler(
         User user,
         UUID itemId,
-        CreateItemRequest request
+        CreateLocalStockRequest request
     ) {
         var garage = garageService.getByUser(user).orElseThrow(() ->
             new ResponseStatusException(

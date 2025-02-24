@@ -4,6 +4,7 @@ import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.vehicleType.dtos.CreateVehicleTypeDTO;
 import br.com.starter.application.api.vehicleType.dtos.UpdateVehicleTypeDTO;
 import br.com.starter.application.useCase.vehicleType.CreateVehicleTypeUseCase;
+import br.com.starter.application.useCase.vehicleType.GetAllVehicleTypeUseCase;
 import br.com.starter.application.useCase.vehicleType.GetVehicleTypeUseCase;
 import br.com.starter.application.useCase.vehicleType.UpdateVehicleTypeUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
@@ -23,43 +24,54 @@ public class VehicleTypeController {
     private final CreateVehicleTypeUseCase createVehicleTypeUseCase;
     private final GetVehicleTypeUseCase getVehicleTypeUseCase;
     private final UpdateVehicleTypeUseCase updateVehicleTypeUseCase;
+    private final GetAllVehicleTypeUseCase getAllVehicleTypeUseCase;
 
     @PostMapping
     public ResponseEntity<?> createVehicleType(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody CreateVehicleTypeDTO createVehicleTypeDTO
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody CreateVehicleTypeDTO createVehicleTypeDTO
     ) {
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        createVehicleTypeUseCase.handler(createVehicleTypeDTO)
-                )
+            new ResponseDTO<>(
+                createVehicleTypeUseCase.handler(createVehicleTypeDTO)
+            )
         );
     }
 
     @PutMapping("/{vehicleTypeId}")
     public ResponseEntity<?> update(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody UpdateVehicleTypeDTO request,
-            @PathVariable UUID vehicleTypeId
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody UpdateVehicleTypeDTO request,
+        @PathVariable UUID vehicleTypeId
     ) {
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        updateVehicleTypeUseCase.handler(vehicleTypeId, request)
-                )
+            new ResponseDTO<>(
+                updateVehicleTypeUseCase.handler(vehicleTypeId, request)
+            )
         );
     }
 
     @GetMapping("/{vehicleTypeId}")
-    public ResponseEntity<?> get(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @PathVariable UUID vehicleTypeId
+    public ResponseEntity<?> getById(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID vehicleTypeId
     ) {
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        getVehicleTypeUseCase.handler(vehicleTypeId)
-                )
+            new ResponseDTO<>(
+                getVehicleTypeUseCase.handler(vehicleTypeId)
+            )
         );
 
     }
 
+    @GetMapping
+    public ResponseEntity<?> get(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication
+    ) {
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getAllVehicleTypeUseCase.handler()
+            )
+        );
+    }
 }

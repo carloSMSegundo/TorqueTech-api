@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +26,10 @@ public class VehicleTypeService {
 
     public Optional<VehicleType> getById(UUID id) {
         return vehicleTypeRepository.findById(id);
+    }
+
+    public List<VehicleType> findAll(){
+        return vehicleTypeRepository.findAll();
     }
 
     public VehicleType update(UUID id, VehicleType vehicleType) {

@@ -20,8 +20,7 @@ public class GetAllItemUseCase {
     private final GarageService garageService;
 
     public Optional<?> handler(
-        User user,
-        GetAllRequest request
+        User user
     ) {
         var garage = garageService.getByUser(user).orElseThrow(() ->
             new ResponseStatusException(
@@ -31,8 +30,7 @@ public class GetAllItemUseCase {
         );
 
         return Optional.of(itemService.findAllByGarageAndQuery(
-            garage,
-            request.getQuery()
+            garage
         ));
     }
 }

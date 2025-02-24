@@ -32,11 +32,10 @@ public class ItemService {
         return itemRepository.findByIdAndGarage(id, garage.getId());
     }
 
-    public List<Item> findAllByGarageAndQuery(Garage garage, String query) {
+    public List<Item> findAllByGarageAndQuery(Garage garage) {
         return itemRepository.findAllByGarageAndQuery(
             garage.getId(),
-            ItemStatus.ACTIVE,
-            query
+            ItemStatus.ACTIVE
         );
     }
 

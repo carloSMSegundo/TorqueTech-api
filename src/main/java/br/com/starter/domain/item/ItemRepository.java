@@ -28,15 +28,10 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
         SELECT i FROM Item i
         WHERE i.garage.id = :garageId
         AND i.status = :status
-        AND (
-            :query IS NULL
-            OR LOWER(i.name) LIKE LOWER(CONCAT('%', :query, '%'))
-        )
     """)
     List<Item> findAllByGarageAndQuery(
         @Param("garageId") UUID garageId,
-        @Param("status") ItemStatus status,
-        @Param("query") String query
+        @Param("status") ItemStatus status
     );
 
     @Query("""

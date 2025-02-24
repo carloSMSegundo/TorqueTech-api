@@ -10,4 +10,5 @@ public class UpdateVehicleDTO {
     private String licensePlate;
     private String color;
     private UUID vehicleTypeId;
+    private String category;
 }

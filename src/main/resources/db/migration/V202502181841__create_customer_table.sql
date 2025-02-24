@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS customer (
     id UUID PRIMARY KEY NOT NULL,
     status VARCHAR(50) NOT NULL,
-    name VARCHAR(255) NOT NULL,
     profile_id UUID,
     garage_id UUID NOT NULL,
     owner_id UUID NOT NULL,

@@ -39,10 +39,10 @@ public class CreateCustomerUseCase {
         ModelMapper mapper = new ModelMapper();
 
         Garage garage = garageService.getByUser(owner).orElseThrow(() ->
-            new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "O usuário não possui uma oficina registrada!"
-            )
+                new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O usuário não possui uma oficina registrada!"
+                )
         );
 
         if (request.getDocument() != null)
@@ -50,7 +50,6 @@ public class CreateCustomerUseCase {
 
         Customer customer = new Customer();
         customer.setStatus(request.getStatus());
-        customer.setName(request.getName());
 
         Profile profile = new Profile();
         profile.setDocument(request.getDocument());

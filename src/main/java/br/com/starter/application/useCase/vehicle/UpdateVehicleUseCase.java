@@ -5,6 +5,7 @@ import br.com.starter.domain.vehicle.Vehicle;
 import br.com.starter.domain.vehicle.VehicleService;
 import br.com.starter.domain.user.UserService;
 import br.com.starter.domain.vehicleType.VehicleType;
+import br.com.starter.domain.vehicleType.VehicleTypeCategory;
 import br.com.starter.domain.vehicleType.VehicleTypeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,19 @@ public class UpdateVehicleUseCase {
                     .orElseThrow(() ->
                             new IllegalArgumentException("Tipo de veículo não encontrado")
                     );
-
             vehicle.setVehicleType(vehicleType);
+        }
+
+        if (request.getCategory() != null) {
+            try {
+                VehicleTypeCategory category = VehicleTypeCategory.valueOf(request.getCategory().toUpperCase());
+                vehicle.getVehicleType().setCategory(category);
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Categoria de veículo inválida!"
+                );
+            }
         }
 
         vehicle.setLicensePlate(request.getLicensePlate());

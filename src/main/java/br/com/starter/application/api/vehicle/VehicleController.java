@@ -70,7 +70,7 @@ public class VehicleController {
         );
     }
 
-    @PostMapping("/customer/{customerId}/{page}")
+    @PostMapping("/customer/{customerId}/page/{page}")
     public ResponseEntity<?> page(
             @AuthenticationPrincipal CustomUserDetails userAuthentication,
             @PathVariable UUID customerId,

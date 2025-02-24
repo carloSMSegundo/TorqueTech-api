@@ -31,11 +31,11 @@ public class StockTransactionService {
     }
 
     public List<StockTransaction> getAllByIds(Set<UUID> ids) {
-        return stockTransactionRepository.findAllById(ids);
+        return stockTransactionRepository.findAllByIds(ids);
     }
 
     public Page<StockTransaction> getAllByIds(Set<UUID> ids, Pageable pageable) {
-        return stockTransactionRepository.findAllById(ids, pageable);
+        return stockTransactionRepository.findAllByIds(ids, pageable);
     }
 
     public Set<UUID> getPageFilterIds (

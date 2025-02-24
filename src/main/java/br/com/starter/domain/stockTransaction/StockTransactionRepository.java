@@ -15,8 +15,22 @@ import java.util.UUID;
 @Repository
 public interface StockTransactionRepository extends JpaRepository<StockTransaction, UUID> {
 
-   List<StockTransaction> findAllById(Set<UUID> ids);
-   Page<StockTransaction> findAllById(Set<UUID> ids, Pageable pageable);
+    @Query("""
+        SELECT s FROM StockTransaction s
+        WHERE s.id in :ids
+    """)
+    List<StockTransaction> findAllByIds(
+        @Param("ids") Set<UUID> ids
+    );
+
+    @Query("""
+        SELECT s FROM StockTransaction s
+        WHERE s.id in :ids
+    """)
+    Page<StockTransaction> findAllByIds(
+        @Param("ids") Set<UUID> ids,
+        Pageable pageable
+    );
 
     @Query("""
         SELECT s.id FROM StockTransaction s

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS work_order (
     start_at TIMESTAMP NOT NULL,
     concluded_at TIMESTAMP,
     expected_at TIMESTAMP,
+    deleted_at TIMESTAMP,
 
     status VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,

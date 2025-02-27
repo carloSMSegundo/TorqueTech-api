@@ -1,6 +1,5 @@
 package br.com.starter.application.useCase.work;
 
-import br.com.starter.application.api.manager.dtos.CreateManagerDTO;
 import br.com.starter.application.api.work.dtos.CreateWorkRequestDTO;
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.customer.CustomerService;
@@ -9,15 +8,12 @@ import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.mechanic.Mechanic;
 import br.com.starter.domain.mechanic.MechanicService;
 import br.com.starter.domain.user.User;
-import br.com.starter.domain.user.UserService;
 import br.com.starter.domain.vehicle.Vehicle;
 import br.com.starter.domain.vehicle.VehicleService;
 import br.com.starter.domain.work.Work;
 import br.com.starter.domain.work.WorkService;
 import br.com.starter.domain.workOrder.WorkOrder;
-import br.com.starter.domain.workOrder.WorkOrderService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -76,7 +72,6 @@ public class CreateWorkRequestUseCase {
                     WorkOrder workOrder = new WorkOrder();
                     workOrder.setTitle(workOrderRequest.getTitle());
                     workOrder.setDescription(workOrderRequest.getDescription());
-                    workOrder.setStatus(workOrderRequest.getStatus());
                     workOrder.setStartAt(workOrderRequest.getStartAt());
                     workOrder.setExpectedAt(workOrderRequest.getExpectedAt());
                     workOrder.setCost(workOrderRequest.getCost());

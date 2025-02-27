@@ -7,5 +7,5 @@ public enum WorkOrderStatus {
     ON_HOLD,
     COMPLETED,
     OVERDUE,
-    CANCELLED,
+    DELETED,
 }

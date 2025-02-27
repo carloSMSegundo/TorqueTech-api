@@ -6,7 +6,6 @@ import br.com.starter.domain.mechanic.Mechanic;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.vehicle.Vehicle;
 import br.com.starter.domain.workOrder.WorkOrder;
-import br.com.starter.domain.workOrder.WorkOrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -59,11 +58,14 @@ public class Work {
     private Set<WorkOrder> orders = new HashSet<>();
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startAt; // dúvida - usar o LocalDateTime.now()???
+    private LocalDateTime startAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime concludedAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expectedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime cancelledAt;
+
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();

@@ -27,4 +27,6 @@ public class WorkOrderService {
     public Optional<WorkOrder> getByStatus(WorkOrderStatus status) {
         return workOrderRepository.findByStatus(status);
     }
+
+    // relacionar com
 }

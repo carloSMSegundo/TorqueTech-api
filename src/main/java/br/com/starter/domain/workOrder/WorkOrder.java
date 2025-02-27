@@ -28,7 +28,7 @@ public class WorkOrder {
     private Long cost;
 
     @Enumerated(EnumType.STRING)
-    private WorkOrderStatus status;
+    private WorkOrderStatus status = WorkOrderStatus.PENDING;
 
     @OneToMany(mappedBy = "WorkOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<StockTransaction> items = new HashSet<>();
@@ -39,11 +39,13 @@ public class WorkOrder {
     private Work work;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startAt; // dúvida - usar o LocalDateTime.now()???
+    private LocalDateTime startAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime concludedAt;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expectedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime cancelledAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();

@@ -4,9 +4,10 @@ import br.com.starter.domain.workOrder.WorkOrderStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
-public class CreateWorkOrderRequest {
+public class CreateWorkOrderRequestDTO {
     private String title;
     private String description;
     private String note;
@@ -14,5 +15,6 @@ public class CreateWorkOrderRequest {
     private LocalDateTime startAt;
     private LocalDateTime expectedAt;
     private Long cost;
-    private Long workId;
+
+    private UUID workId;
 }

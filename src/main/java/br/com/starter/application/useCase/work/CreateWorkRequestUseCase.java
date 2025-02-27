@@ -62,7 +62,6 @@ public class CreateWorkRequestUseCase {
         work.setDescription(request.getDescription());
         work.setStartAt(request.getStartAt());
         work.setExpectedAt(request.getExpectedAt());
-        work.setTotalCost(request.getTotalCost());
         work.setPrice(request.getPrice());
 
         Set<WorkOrder> workOrders = Optional.ofNullable(request.getWorkOrders())
@@ -81,6 +80,12 @@ public class CreateWorkRequestUseCase {
                     return workOrder;
                 })
                 .collect(Collectors.toSet());
+
+        long totalCost = workOrders.stream()
+                .mapToLong(WorkOrder::getCost)  // Obtém o custo de cada WorkOrder
+                .sum();  // Soma os custos
+
+        work.setTotalCost(totalCost);
 
         work.setMechanic(mechanic);
         work.setOwner(owner);

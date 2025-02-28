@@ -1,6 +1,9 @@
 package br.com.starter.application.useCase.workOrder;
 
 import br.com.starter.application.api.workOrder.dtos.CreateWorkOrderRequestDTO;
+import br.com.starter.domain.garage.Garage;
+import br.com.starter.domain.garage.GarageService;
+import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.Work;
 import br.com.starter.domain.work.WorkService;
 import br.com.starter.domain.workOrder.WorkOrder;
@@ -19,16 +22,23 @@ public class CreateWorkOrderRequestUseCase {
 
     private final WorkService workService;
     private final WorkOrderService workOrderService;
+    private final GarageService garageService;
 
     @Transactional
-    public Optional<WorkOrder> handler(CreateWorkOrderRequestDTO request) {
+    public Optional<WorkOrder> handler(CreateWorkOrderRequestDTO request, User owner) {
 
         Work work = workService.getById(request.getWorkId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Work não encontrado!"
                 ));
 
-        // TODO fazer a lógica de apenas usuários registrados naquela oficina criarem? passar user para a workOrder tbm???
+        Garage userGarage = garageService.getByUser(owner).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não possui uma oficina registrada"));
+
+
+        if (!work.getGarage().getId().equals(userGarage.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado a criar esta WorkOrder.");
+        }
 
         WorkOrder workOrder = new WorkOrder();
         workOrder.setTitle(request.getTitle());

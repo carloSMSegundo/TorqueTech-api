@@ -24,9 +24,10 @@ public class WorkOrderController {
             @AuthenticationPrincipal CustomUserDetails userAuthentication,
             @Valid @RequestBody CreateWorkOrderRequestDTO request
     ) {
+        var owner = userAuthentication.getUser();
         return ResponseEntity.ok(
                 new ResponseDTO<>(
-                        createWorkOrderRequestUseCase.handler(request)
+                        createWorkOrderRequestUseCase.handler(request, owner)
                 )
         );
     }

@@ -94,6 +94,8 @@ public class CreateWorkRequestUseCase {
         work.setGarage(garage);
         work.setOrders(workOrders);
 
+        // TODO criar alguma lógica envolvendo datas???
+
         return Optional.of(workService.save(work));
     }
 }

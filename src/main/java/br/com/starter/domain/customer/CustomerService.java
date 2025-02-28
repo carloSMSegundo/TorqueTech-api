@@ -1,22 +1,25 @@
 package br.com.starter.domain.customer;
 
+import br.com.starter.application.api.customer.dtos.GetPageCustomerRequest;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.manager.Manager;
 import br.com.starter.domain.user.UserStatus;
+import br.com.starter.domain.vehicle.Vehicle;
+import br.com.starter.domain.vehicle.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final VehicleRepository vehicleRepository;
 
     public Customer save(Customer customer)
     {

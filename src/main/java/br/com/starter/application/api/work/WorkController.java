@@ -1,16 +1,22 @@
 package br.com.starter.application.api.work;
 
 import br.com.starter.application.api.common.ResponseDTO;
+import br.com.starter.application.api.customer.dtos.UpdateCustomerDTO;
 import br.com.starter.application.api.work.dtos.CreateWorkRequestDTO;
 import br.com.starter.application.api.work.dtos.GetPageWorkRequest;
+import br.com.starter.application.api.work.dtos.UpdateWorkDTO;
 import br.com.starter.application.useCase.work.CreateWorkRequestUseCase;
 import br.com.starter.application.useCase.work.GetPageWorkUseCase;
+import br.com.starter.application.useCase.work.UpdateWorkUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/torque/api/work")
@@ -19,6 +25,7 @@ public class WorkController {
 
     private final CreateWorkRequestUseCase createWorkRequestUseCase;
     private final GetPageWorkUseCase getPageWorkUseCase;
+    private final UpdateWorkUseCase updateWorkUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -43,6 +50,20 @@ public class WorkController {
         Page<?> worksPage = getPageWorkUseCase.handler(owner, request, page);
 
         return ResponseEntity.ok(new ResponseDTO<>(worksPage));
+    }
+
+    @PutMapping("/{workId}")
+    public ResponseEntity<?> update(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody UpdateWorkDTO request,
+            @PathVariable UUID workId
+    ) {
+        var owner = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        updateWorkUseCase.handler(workId, owner, request)
+                )
+        );
     }
 
 

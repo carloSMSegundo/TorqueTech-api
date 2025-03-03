@@ -24,6 +24,7 @@ public class Customer {
     @Id
     private UUID id = UUID.randomUUID();
 
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)

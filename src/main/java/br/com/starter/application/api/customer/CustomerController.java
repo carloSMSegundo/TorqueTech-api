@@ -64,7 +64,9 @@ public class CustomerController {
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-            getCustomerUseCase.handler(user, customerId)
+            new ResponseDTO<>(
+                getCustomerUseCase.handler(user, customerId)
+            )
         );
     }
 
@@ -74,7 +76,9 @@ public class CustomerController {
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-            getAllCustomerUseCase.handler(user)
+            new ResponseDTO<>(
+                getAllCustomerUseCase.handler(user)
+            )
         );
     }
 

@@ -24,6 +24,8 @@ public class Customer {
     @Id
     private UUID id = UUID.randomUUID();
 
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 

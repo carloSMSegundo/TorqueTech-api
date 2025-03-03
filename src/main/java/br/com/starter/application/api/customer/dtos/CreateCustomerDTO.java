@@ -19,6 +19,7 @@ public class CreateCustomerDTO {
     private String document;
     @Size(min = 8, max = 11, message = "Telefone inválido")
     private String phone;
+    private String email;
     private LocalDate birthDate = null;
     private AddressDTO address = null;
     private List<CreateVehicleDTO> vehicles;

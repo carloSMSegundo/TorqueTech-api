@@ -17,7 +17,6 @@ public class CreateCustomerDTO {
     private String name;
     @Size(min = 11, max = 14, message = "CPF/CNPj inválido")
     private String document;
-    @Size(min = 8, max = 11, message = "Telefone inválido")
     private String phone;
     private String email;
     private LocalDate birthDate = null;

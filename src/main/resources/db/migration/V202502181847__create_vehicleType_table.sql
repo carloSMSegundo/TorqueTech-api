@@ -4,5 +4,7 @@ CREATE TABLE IF NOT EXISTS vehicle_types (
     brand VARCHAR(255) NOT NULL,
     category VARCHAR(50) NOT NULL,
     year VARCHAR(10) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    owner_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_vehicle_types_owner FOREIGN KEY (owner_id) REFERENCES users(id)
 );

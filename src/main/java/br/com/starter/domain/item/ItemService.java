@@ -24,6 +24,7 @@ public class ItemService {
     public List<Item> getAll() {
         return itemRepository.findAll();
     }
+
     public Page<Item> getAll(Pageable pageable) {
         return itemRepository.findAll(pageable);
     }
@@ -34,15 +35,20 @@ public class ItemService {
 
     public List<Item> findAllByGarageAndQuery(Garage garage) {
         return itemRepository.findAllByGarageAndQuery(
-            garage.getId(),
-            ItemStatus.ACTIVE
+                garage.getId(),
+                ItemStatus.ACTIVE
         );
     }
 
-    public Page<Item> findPageAllByGarageAndQuery(Garage garage, String query, Pageable pageable) {
+    public Page<Item> findPageAllByGarageAndQuery(
+        Garage garage,
+        String query,
+        ItemStatus status,
+        Pageable pageable
+    ) {
         return itemRepository.findPageAllByGarageAndQuery(
             garage.getId(),
-            ItemStatus.ACTIVE,
+            status,
             query,
             pageable
         );

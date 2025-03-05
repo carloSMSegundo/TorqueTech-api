@@ -1,14 +1,10 @@
-package br.com.starter.application.useCase.local;
+package br.com.starter.application.useCase.stockItem;
 
-import br.com.starter.application.api.common.GetAllRequest;
-import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.domain.garage.GarageService;
-import br.com.starter.domain.item.ItemStatus;
 import br.com.starter.domain.local.LocalService;
-import br.com.starter.domain.local.LocalStatus;
+import br.com.starter.domain.stockItem.StockItemService;
 import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,14 +13,12 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class GetPageLocalUseCase {
-    private final LocalService localService;
+public class GetAllStockItemUseCase {
+    private final StockItemService stockItemService;
     private final GarageService garageService;
 
     public Optional<?> handler(
-        User user,
-        Integer page,
-        GetPageRequest request
+        User user
     ) {
         var garage = garageService.getByUser(user).orElseThrow(() ->
             new ResponseStatusException(
@@ -33,11 +27,8 @@ public class GetPageLocalUseCase {
             )
         );
 
-        return Optional.of(localService.findAllByGarageAndQuery(
-            garage,
-            request.getQuery(),
-            LocalStatus.valueOf(request.getStatus().name()),
-            PageRequest.of(page, request.getSize())
+        return Optional.of(stockItemService.getAllByGarage(
+            garage.getId()
         ));
     }
 }

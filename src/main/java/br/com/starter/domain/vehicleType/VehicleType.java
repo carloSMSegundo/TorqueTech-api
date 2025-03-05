@@ -1,5 +1,6 @@
 package br.com.starter.domain.vehicleType;
 
+import br.com.starter.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,5 +24,11 @@ public class VehicleType {
     private String brand;
     private String year;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
 

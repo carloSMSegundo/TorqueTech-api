@@ -1,12 +1,10 @@
 package br.com.starter.application.api.vehicleType;
 
+import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.vehicleType.dtos.CreateVehicleTypeDTO;
 import br.com.starter.application.api.vehicleType.dtos.UpdateVehicleTypeDTO;
-import br.com.starter.application.useCase.vehicleType.CreateVehicleTypeUseCase;
-import br.com.starter.application.useCase.vehicleType.GetAllVehicleTypeUseCase;
-import br.com.starter.application.useCase.vehicleType.GetVehicleTypeUseCase;
-import br.com.starter.application.useCase.vehicleType.UpdateVehicleTypeUseCase;
+import br.com.starter.application.useCase.vehicleType.*;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +23,17 @@ public class VehicleTypeController {
     private final GetVehicleTypeUseCase getVehicleTypeUseCase;
     private final UpdateVehicleTypeUseCase updateVehicleTypeUseCase;
     private final GetAllVehicleTypeUseCase getAllVehicleTypeUseCase;
+    private final GetPageVehicleTypeUseCase getPageVehicleTypeUseCase;
 
     @PostMapping
     public ResponseEntity<?> createVehicleType(
         @AuthenticationPrincipal CustomUserDetails userAuthentication,
         @Valid @RequestBody CreateVehicleTypeDTO createVehicleTypeDTO
     ) {
+        var user = userAuthentication.getUser();
         return ResponseEntity.ok(
             new ResponseDTO<>(
-                createVehicleTypeUseCase.handler(createVehicleTypeDTO)
+                createVehicleTypeUseCase.handler(user, createVehicleTypeDTO)
             )
         );
     }
@@ -62,6 +62,19 @@ public class VehicleTypeController {
             )
         );
 
+    }
+
+    @PostMapping("/page/{page}")
+    public ResponseEntity<?> page(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable Integer page,
+        @RequestBody GetPageRequest request
+    ){
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getPageVehicleTypeUseCase.handler(page, request)
+            )
+        );
     }
 
     @GetMapping

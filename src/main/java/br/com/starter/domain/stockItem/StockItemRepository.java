@@ -14,9 +14,12 @@ public interface StockItemRepository extends JpaRepository<StockItem, UUID> {
 
     @Query("""
         SELECT s FROM StockItem s
-        WHERE s.quantity > 0
+        WHERE s.garage.id = :garageId
+        AND s.quantity > 0
     """)
-    List<StockItem> findAllWithItems();
+    List<StockItem> findAllWithItems(
+        @Param("garageId") UUID garageId
+    );
 
     @Query("""
         SELECT s FROM StockItem s

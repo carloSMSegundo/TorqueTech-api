@@ -19,8 +19,10 @@ public class Item {
     private UUID id = UUID.randomUUID();
 
     private String name;
-    private String category;
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private ItemCategory category;
 
     @Enumerated(EnumType.STRING)
     private ItemStatus status = ItemStatus.ACTIVE;

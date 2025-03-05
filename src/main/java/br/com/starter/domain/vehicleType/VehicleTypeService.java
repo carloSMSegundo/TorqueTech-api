@@ -4,6 +4,7 @@ import br.com.starter.domain.vehicle.Vehicle;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,12 +51,9 @@ public class VehicleTypeService {
         return vehicleTypeRepository.findById(vehicleTypeId);
     }
 
-    public Page<VehicleType> listVehicleTypes(int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
-
-        return vehicleTypeRepository.findAll(pageable);
+    public Page<VehicleType> findPageByQuery(String query, Pageable pageable) {
+        return vehicleTypeRepository.findPageByQuery(query, pageable);
     }
-
 
     public Page<VehicleType> filterByBrandAndModel(String brand, String model, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);

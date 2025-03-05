@@ -51,7 +51,7 @@ public class UpdateMechanicUseCase {
         }
 
         var updateRequest = mapper.map(request, UpdateUserDTO.class);
-        updateRequest.setEmail(request.getUsername());
+        updateRequest.setUsername(request.getUsername());
 
         var updatedUser = userService.update(mechanic.getUser().getId(), updateRequest);
         mechanic.setUser(updatedUser);

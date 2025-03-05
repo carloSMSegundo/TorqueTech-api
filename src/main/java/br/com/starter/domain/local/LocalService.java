@@ -34,10 +34,10 @@ public class LocalService {
         );
     }
 
-    public Page<Local> findAllByGarageAndQuery(Garage garage, String query, Pageable pageable) {
+    public Page<Local> findAllByGarageAndQuery(Garage garage, String query, LocalStatus status, Pageable pageable) {
         return localRepository.findAllByGarageAndQuery(
             garage.getId(),
-            LocalStatus.ACTIVE,
+            status,
             query,
             pageable
         );

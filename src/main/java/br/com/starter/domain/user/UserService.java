@@ -210,8 +210,8 @@ public class UserService {
         // update auth
         if(createForm.getPassword() != null)
             updatePassword(currentUser.getId(), createForm.getPassword());
-        if(createForm.getEmail() != null)
-            updateUsername(currentUser.getId(), createForm.getEmail());
+        if(createForm.getUsername() != null)
+            updateUsername(currentUser.getId(), createForm.getUsername());
 
         Profile profile = currentUser.getProfile();
         profile.setName(createForm.getName());

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class UpdateUserDTO {
     private String name;
-    private String email;
+    private String username;
     private String document;
     private String phone;
     private String password;

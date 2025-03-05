@@ -24,24 +24,41 @@ public class StockTransactionController {
     private final OutputStockTransactionUseCase outputStockTransactionUseCase;
     private final CancelStockTransactionUseCase cancelStockTransactionUseCase;
     private final GetStockTransactionUseCase getStockTransactionUseCase;
+    private final UpdateOutStockTransactionUseCase updateOutStockTransactionUseCase;
+    private final UpdateInpStockTransactionUseCase updateInpStockTransactionUseCase;
+
 
     @PostMapping("/input")
     public ResponseEntity<?> input(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody InputStockTransactionRequest request
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        createStockTransactionUseCase.handler(user, request)
+                )
+        );
+    }
+
+    @PutMapping("/input/{stockTransactionId}")
+    public ResponseEntity<?> updateInput(
         @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID stockTransactionId,
         @Valid @RequestBody InputStockTransactionRequest request
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
             new ResponseDTO<>(
-                createStockTransactionUseCase.handler(user, request)
+                updateInpStockTransactionUseCase.handler(user, stockTransactionId, request)
             )
         );
     }
 
     @PostMapping("/output")
     public ResponseEntity<?> output(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody OutputStockTransactionRequest request
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody OutputStockTransactionRequest request
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
@@ -51,47 +68,61 @@ public class StockTransactionController {
         );
     }
 
-    @PutMapping("/{stockTransactionId}/cancel")
-    public ResponseEntity<?> cancel(
+    @PutMapping("/output/{stockTransactionId}")
+    public ResponseEntity<?> updateOutput(
         @AuthenticationPrincipal CustomUserDetails userAuthentication,
-        @PathVariable UUID stockTransactionId
+        @PathVariable UUID stockTransactionId,
+        @Valid @RequestBody OutputStockTransactionRequest request
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
             new ResponseDTO<>(
-                cancelStockTransactionUseCase.handler(user, stockTransactionId)
+                updateOutStockTransactionUseCase.handler(user, stockTransactionId, request)
             )
+        );
+    }
+
+    @PutMapping("/{stockTransactionId}/cancel")
+    public ResponseEntity<?> cancel(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID stockTransactionId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        cancelStockTransactionUseCase.handler(user, stockTransactionId)
+                )
         );
     }
 
     @GetMapping("/{stockTransactionId}")
     public ResponseEntity<?> get(
-        @AuthenticationPrincipal CustomUserDetails userAuthentication,
-        @PathVariable UUID stockTransactionId
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID stockTransactionId
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-            new ResponseDTO<>(
-                getStockTransactionUseCase.handler(user, stockTransactionId)
-            )
+                new ResponseDTO<>(
+                        getStockTransactionUseCase.handler(user, stockTransactionId)
+                )
         );
     }
 
     @PostMapping("/page/{page}")
     public ResponseEntity<?> page(
-        @AuthenticationPrincipal CustomUserDetails userAuthentication,
-        @PathVariable Integer page,
-        @RequestBody GetPageStockTransactionRequest request
-    ){
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable Integer page,
+            @RequestBody GetPageStockTransactionRequest request
+    ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-            new ResponseDTO<>(
-                getPageStockTransactionUseCase.handler(
-                    user,
-                    request,
-                    page
+                new ResponseDTO<>(
+                        getPageStockTransactionUseCase.handler(
+                                user,
+                                request,
+                                page
+                        )
                 )
-            )
         );
     }
 }

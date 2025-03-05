@@ -4,6 +4,7 @@ import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.item.dtos.CreateItemRequest;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.item.ItemService;
+import br.com.starter.domain.item.ItemStatus;
 import br.com.starter.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,7 @@ public class GetPageItemUseCase {
         return Optional.of(itemService.findPageAllByGarageAndQuery(
             garage,
             request.getQuery(),
+            ItemStatus.valueOf(request.getStatus().name()),
             PageRequest.of(page, request.getSize())
         ));
     }

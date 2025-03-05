@@ -68,9 +68,18 @@ public class StockTransactionService {
         }
 
         if (request.getTransactionType() != null) {
-            var ids = stockTransactionRepository.findBytransactionTypeFilter(
+            var ids = stockTransactionRepository.findByTransactionTypeFilter(
                 garage.getId(),
                 request.getTransactionType()
+            );
+
+            mapper = mountMapper(mapper, ids);
+        }
+
+        if (request.getCategory() != null) {
+            var ids = stockTransactionRepository.findByTransactionCategoryFilter(
+                garage.getId(),
+                request.getCategory()
             );
 
             mapper = mountMapper(mapper, ids);

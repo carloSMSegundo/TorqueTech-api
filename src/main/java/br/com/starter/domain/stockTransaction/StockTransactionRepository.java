@@ -67,9 +67,19 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
         WHERE s.garage.id = :garageId
         AND s.type = :type
     """)
-    Set<UUID> findBytransactionTypeFilter(
+    Set<UUID> findByTransactionTypeFilter(
         @Param("garageId") UUID garageId,
         @Param("type") TransactionType type
+    );
+
+    @Query("""
+        SELECT distinct s.id FROM StockTransaction s
+        WHERE s.garage.id = :garageId
+        AND s.category = :category
+    """)
+    Set<UUID> findByTransactionCategoryFilter(
+        @Param("garageId") UUID garageId,
+        @Param("category") TransactionCategory category
     );
 
     @Query("""

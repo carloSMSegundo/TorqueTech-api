@@ -17,8 +17,8 @@ public class StockItemService {
         return stockItemRepository.save(stockItem);
     }
 
-    public List<StockItem> findAll() {
-        return stockItemRepository.findAllWithItems();
+    public List<StockItem> getAllByGarage(UUID garageId) {
+        return stockItemRepository.findAllWithItems(garageId);
     }
 
     public Optional<StockItem> findByItemAndPrice(UUID itemId, UUID garageId, UUID localId , Long price) {

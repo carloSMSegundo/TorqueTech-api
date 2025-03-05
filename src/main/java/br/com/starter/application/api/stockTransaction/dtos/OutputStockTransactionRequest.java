@@ -8,10 +8,9 @@ import java.util.UUID;
 
 @Data
 public class OutputStockTransactionRequest {
-    private UUID itemId;
-    private UUID localId;
-    private Long stockItemId;
+    private UUID stockItemId;
     private Integer quantity;
-    private TransactionCategory category;
+    private Long price;
     private LocalDateTime transactionAt;
+    private TransactionCategory category;
 }

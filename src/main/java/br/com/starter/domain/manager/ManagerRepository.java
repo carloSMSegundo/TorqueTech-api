@@ -33,5 +33,13 @@ public interface ManagerRepository extends JpaRepository<Manager, UUID> {
         Pageable pageable
     );
 
-    // findByIdAndGarageId
+    @Query("""
+    SELECT manager FROM Manager manager
+    WHERE manager.id = :id
+    AND manager.garage.id = :garageId
+""")
+    Optional<Manager> findByIdAndGarageId(
+            @Param("id") UUID id,
+            @Param("garageId") UUID garageId
+    );
 }

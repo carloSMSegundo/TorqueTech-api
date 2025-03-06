@@ -50,4 +50,9 @@ public class ManagerService {
     public Optional<Manager> getByUser(User user) {
         return  managerRepository.findByUser(user);
     }
+
+    public Optional<Manager> getByIdAndGarageId(UUID managerId, UUID garageId) {
+        return managerRepository.findByIdAndGarageId(managerId, garageId);
+    }
+
 }

@@ -36,19 +36,12 @@ public class UpdateMechanicUseCase {
                 )
         );
 
-        var mechanic = mechanicService.getById(mechanicId).orElseThrow(() ->
+        var mechanic = mechanicService.getByIdAndGarageId(mechanicId, garage.getId()).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Mecânico não encontrado!"
+                        "Mecânico não encontrado ou não pertence à sua oficina!"
                 )
         );
-
-        if (!mechanic.getGarage().equals(garage)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Você não tem permissão para atualizar este mecânico."
-            );
-        }
 
         var updateRequest = mapper.map(request, UpdateUserDTO.class);
         updateRequest.setUsername(request.getUsername());

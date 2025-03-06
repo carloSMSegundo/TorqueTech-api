@@ -39,7 +39,7 @@ public class LocalController {
     }
 
     @PutMapping("/{localId}")
-    public ResponseEntity<?> create(
+    public ResponseEntity<?> update(
         @AuthenticationPrincipal CustomUserDetails userAuthentication,
         @Valid @RequestBody CreateLocalStockRequest request,
         @PathVariable UUID localId
@@ -53,7 +53,7 @@ public class LocalController {
     }
 
     @PutMapping("/{localId}/status")
-    public ResponseEntity<?> create(
+    public ResponseEntity<?> updateStatus(
         @AuthenticationPrincipal CustomUserDetails userAuthentication,
         @Valid @RequestBody UpdateLocalStatusRequest request,
         @PathVariable UUID localId
@@ -81,7 +81,7 @@ public class LocalController {
     }
 
     @GetMapping
-    public ResponseEntity<?> page(
+    public ResponseEntity<?> getAll(
         @AuthenticationPrincipal CustomUserDetails userAuthentication
     ){
         var user = userAuthentication.getUser();

@@ -20,7 +20,7 @@ public class LocalService {
     }
 
     public Optional<Local> getByIdAndGarageId(UUID localId, UUID garageId) {
-        return localRepository.findByIdAndGarageId(localId, garageId);
+        return localRepository.findByIdAndGarageId(garageId, localId);
     }
 
     public void delete(Local local) {

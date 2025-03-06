@@ -20,7 +20,7 @@ public class UpdateLocalUseCase {
 
     public Optional<?> handler(
         User user,
-        UUID itemId,
+        UUID localId,
         CreateLocalStockRequest request
     ) {
         var garage = garageService.getByUser(user).orElseThrow(() ->
@@ -30,7 +30,7 @@ public class UpdateLocalUseCase {
             )
         );
 
-        var local = localService.getByIdAndGarageId(itemId, garage.getId()).orElseThrow(() ->
+        var local = localService.getByIdAndGarageId(localId, garage.getId()).orElseThrow(() ->
             new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Item não encontrado!"

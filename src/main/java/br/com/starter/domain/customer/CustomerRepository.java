@@ -2,18 +2,20 @@
 
     import br.com.starter.domain.user.User;
     import br.com.starter.domain.user.UserStatus;
+    import br.com.starter.domain.work.WorkStatus;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.data.jpa.repository.Query;
     import org.springframework.data.repository.query.Param;
 
+    import java.time.LocalDateTime;
     import java.util.List;
     import java.util.Optional;
+    import java.util.Set;
     import java.util.UUID;
 
     public interface CustomerRepository extends JpaRepository<Customer, UUID> {
-        Page<Customer> findByOwner(User owner, Pageable pageable);
 
         @Query("""
             SELECT c FROM Customer c
@@ -50,4 +52,5 @@
             @Param("garageId") UUID garageId,
             @Param("customerId") UUID customerId
         );
+
     }

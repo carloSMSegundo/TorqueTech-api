@@ -1,13 +1,8 @@
 package br.com.starter.application.api.work;
 
 import br.com.starter.application.api.common.ResponseDTO;
-import br.com.starter.application.api.customer.dtos.UpdateCustomerDTO;
-import br.com.starter.application.api.work.dtos.CreateWorkRequestDTO;
-import br.com.starter.application.api.work.dtos.GetPageWorkRequest;
-import br.com.starter.application.api.work.dtos.UpdateWorkDTO;
-import br.com.starter.application.useCase.work.CreateWorkRequestUseCase;
-import br.com.starter.application.useCase.work.GetPageWorkUseCase;
-import br.com.starter.application.useCase.work.UpdateWorkUseCase;
+import br.com.starter.application.api.work.dtos.*;
+import br.com.starter.application.useCase.work.*;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +21,8 @@ public class WorkController {
     private final CreateWorkRequestUseCase createWorkRequestUseCase;
     private final GetPageWorkUseCase getPageWorkUseCase;
     private final UpdateWorkUseCase updateWorkUseCase;
+    private final GetPageCustomerWorkUseCase getPageCustomerWorkUseCase;
+    private final GetPageMechanicWorkUseCase getPageMechanicWorkUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -48,6 +45,32 @@ public class WorkController {
     ) {
         var owner = userAuthentication.getUser();
         Page<?> worksPage = getPageWorkUseCase.handler(owner, request, page);
+
+        return ResponseEntity.ok(new ResponseDTO<>(worksPage));
+    }
+
+    @PutMapping("/search/{customerId}/{page}")
+    public ResponseEntity<?> searchCustomer(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @RequestBody GetPageCustomerRequest request,
+            @PathVariable UUID customerId,
+            @PathVariable Integer page
+    ) {
+        var owner = userAuthentication.getUser();
+        Page<?> worksPage = getPageCustomerWorkUseCase.handler(owner,customerId, page, request);
+
+        return ResponseEntity.ok(new ResponseDTO<>(worksPage));
+    }
+
+    @PutMapping("/search/{mechanicId}/{page}")
+    public ResponseEntity<?> searchMechanic(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @RequestBody GetPageMechanicRequest request,
+            @PathVariable UUID mechanicId,
+            @PathVariable Integer page
+    ) {
+        var owner = userAuthentication.getUser();
+        Page<?> worksPage = getPageMechanicWorkUseCase.handler(owner,mechanicId, page, request);
 
         return ResponseEntity.ok(new ResponseDTO<>(worksPage));
     }

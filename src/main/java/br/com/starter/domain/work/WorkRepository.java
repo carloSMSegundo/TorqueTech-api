@@ -24,6 +24,24 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
     );
 
     @Query("""
+        SELECT w FROM Work w
+        WHERE w.customer.id = :customerId
+    """)
+    Page<Work> getAllByCustomer(
+            @Param("customerId") UUID customerId,
+            Pageable pageable
+    );
+
+    @Query("""
+        SELECT w FROM Work w
+        WHERE w.mechanic.id = :mechanicId
+    """)
+    Page<Work> getAllByMechanic(
+            @Param("mechanicId") UUID mechanicId,
+            Pageable pageable
+    );
+
+    @Query("""
     SELECT w.id FROM Work w
     JOIN w.vehicle v
     WHERE v.licensePlate IN :licensePlates
@@ -85,5 +103,102 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("garageId") UUID garageId
     );
 
+    @Query("""
+        SELECT w.id FROM Work w
+        JOIN w.vehicle v
+        WHERE v.licensePlate IN :licensePlates
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findCustomerByLicensePlates(
+            @Param("licensePlates") Set<String> licensePlates,
+            @Param("garageId") UUID garageId,
+            @Param("customerId") UUID customerId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE LOWER(w.title) LIKE LOWER(CONCAT('%', :title, '%'))
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findCustomerByTitleFilter(
+            @Param("title") String title,
+            @Param("garageId") UUID garageId,
+            @Param("customerId") UUID customerId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE w.status = :status
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findCustomerByStatusFilter(
+            @Param("status") WorkStatus status,
+            @Param("garageId") UUID garageId,
+            @Param("customerId") UUID customerId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE w.expectedAt = :expectedAt
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findCustomerByExpectedAt(
+            @Param("expectedAt") LocalDateTime expectedAt,
+            @Param("garageId") UUID garageId,
+            @Param("customerId") UUID customerId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        JOIN w.vehicle v
+        WHERE v.licensePlate IN :licensePlates
+        AND w.garage.id = :garageId
+        AND w.mechanic.id = :mechanicId
+        """)
+    Set<UUID> findMechanicByLicensePlates(
+            @Param("licensePlates") Set<String> licensePlates,
+            @Param("garageId") UUID garageId,
+            @Param("mechanicId") UUID mechanicId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE LOWER(w.title) LIKE LOWER(CONCAT('%', :title, '%'))
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findMechanicByTitleFilter(
+            @Param("title") String title,
+            @Param("garageId") UUID garageId,
+            @Param("mechanicId") UUID mechanicId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE w.status = :status
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findMechanicByStatusFilter(
+            @Param("status") WorkStatus status,
+            @Param("garageId") UUID garageId,
+            @Param("mechanicId") UUID mechanicId
+    );
+
+    @Query("""
+        SELECT w.id FROM Work w
+        WHERE w.expectedAt = :expectedAt
+        AND w.garage.id = :garageId
+        AND w.customer.id = :customerId
+        """)
+    Set<UUID> findMechanicByExpectedAt(
+            @Param("expectedAt") LocalDateTime expectedAt,
+            @Param("garageId") UUID garageId,
+            @Param("mechanicId") UUID mechanicId
+    );
 }
 

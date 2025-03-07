@@ -50,4 +50,8 @@ public class MechanicService {
     public Optional<Mechanic> getByUser(User user) {
         return mechanicRepository.findByUser(user);
     }
+
+    public Optional<Mechanic> getByIdAndGarageId(UUID mechanicId, UUID garageId) {
+        return mechanicRepository.findByIdAndGarageId(mechanicId, garageId);
+    }
 }

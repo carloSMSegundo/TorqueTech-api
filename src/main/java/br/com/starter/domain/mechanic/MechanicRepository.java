@@ -32,4 +32,14 @@ public interface MechanicRepository extends JpaRepository<Mechanic, UUID> {
             @Param("status") UserStatus status,
             Pageable pageable
     );
+
+    @Query("""
+    SELECT mechanic FROM Mechanic mechanic
+    WHERE mechanic.id = :id
+    AND mechanic.garage.id = :garageId
+""")
+    Optional<Mechanic> findByIdAndGarageId(
+            @Param("id") UUID id,
+            @Param("garageId") UUID garageId
+    );
 }

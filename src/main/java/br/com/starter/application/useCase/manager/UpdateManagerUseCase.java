@@ -36,19 +36,12 @@ public class UpdateManagerUseCase {
                 )
         );
 
-        var manager = managerService.getById(managerId).orElseThrow(() ->
+        var manager = managerService.getByIdAndGarageId(managerId, garage.getId()).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Gerente não encontrado!"
+                        "Gerente não encontrado ou não pertence à sua oficina!"
                 )
         );
-
-        if (!manager.getGarage().equals(garage)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Você não tem permissão para atualizar este gerente."
-            );
-        }
 
         var updateRequest = mapper.map(request, UpdateUserDTO.class);
         updateRequest.setUsername(request.getUsername());

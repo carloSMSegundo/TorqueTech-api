@@ -14,7 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
+// TODO melhorar os paths do controller
 @RestController
 @RequestMapping("/torque/api/work/work-order")
 @RequiredArgsConstructor

@@ -28,5 +28,8 @@ public class WorkOrderService {
         return workOrderRepository.findByStatus(status);
     }
 
-    // relacionar com
+    public Optional<WorkOrder> getByIdAndWork(UUID workOrderId, UUID workId) {
+        return workOrderRepository.findByIdAndWorkId(workOrderId, workId);
+    }
+
 }

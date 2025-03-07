@@ -19,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,7 +38,6 @@ public class CreateWorkRequestUseCase {
 
     @Transactional
     public Optional<Work> handler(CreateWorkRequestDTO request, User owner) {
-
         Mechanic mechanic = mechanicService.getById(request.getMechanicId()).orElseThrow(() ->
                 new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
@@ -57,11 +58,15 @@ public class CreateWorkRequestUseCase {
                 )
         );
 
+        if (workService.existsSimilarWork(request, garage)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma Work semelhante já foi criada recentemente.");
+        }
+
         Work work = new Work();
         work.setTitle(request.getTitle());
         work.setDescription(request.getDescription());
         work.setStartAt(request.getStartAt());
-        work.setExpectedAt(request.getExpectedAt());
+        // work.setExpectedAt(request.getExpectedAt());
         work.setPrice(request.getPrice());
 
         Set<WorkOrder> workOrders = Optional.ofNullable(request.getWorkOrders())
@@ -81,20 +86,21 @@ public class CreateWorkRequestUseCase {
                 })
                 .collect(Collectors.toSet());
 
+        work.setOrders(workOrders);
+
+        work.setExpectedAt(workService.calculateWorkExpectedAt(workOrders, work));
+
         long totalCost = workOrders.stream()
                 .mapToLong(WorkOrder::getCost)  // Obtém o custo de cada WorkOrder
                 .sum();  // Soma os custos
 
-        work.setTotalCost(totalCost);
+        work.setTotalCost(totalCost); // seta o custo total
 
         work.setMechanic(mechanic);
         work.setOwner(owner);
         work.setVehicle(vehicle);
         work.setCustomer(customer);
         work.setGarage(garage);
-        work.setOrders(workOrders);
-
-        // TODO criar alguma lógica envolvendo datas???
 
         return Optional.of(workService.save(work));
     }

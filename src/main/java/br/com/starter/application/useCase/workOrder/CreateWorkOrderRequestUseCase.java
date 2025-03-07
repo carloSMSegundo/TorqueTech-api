@@ -26,19 +26,15 @@ public class CreateWorkOrderRequestUseCase {
 
     @Transactional
     public Optional<WorkOrder> handler(CreateWorkOrderRequestDTO request, User owner) {
-
-        Work work = workService.getById(request.getWorkId())
+        Garage garage = garageService.getByUser(owner)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Work não encontrado!"
+                        HttpStatus.NOT_FOUND, "Usuário não possui uma oficina"
                 ));
 
-        Garage userGarage = garageService.getByUser(owner).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não possui uma oficina registrada"));
-
-
-        if (!work.getGarage().getId().equals(userGarage.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado a criar esta WorkOrder.");
-        }
+        Work work = workService.getByIdAndGarageId(request.getWorkId(), garage.getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Usuário não autorizado!"
+                ));
 
         WorkOrder workOrder = new WorkOrder();
         workOrder.setTitle(request.getTitle());
@@ -47,25 +43,16 @@ public class CreateWorkOrderRequestUseCase {
         workOrder.setStartAt(request.getStartAt());
         workOrder.setExpectedAt(request.getExpectedAt());
         workOrder.setCost(request.getCost());
+        workOrder.setWork(work);
+
+        work.getOrders().add(workOrder);
 
         // TODO implementar a lógica envolvendo StockTransation
 
-        workOrder.setWork(work);
-
-        WorkOrder savedWorkOrder = workOrderService.save(workOrder);
-
-        updateTotalCost(work);
+        work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
+        workService.updateTotalCost(work);
 
         workService.save(work);
-
-        return Optional.of(savedWorkOrder);
-    }
-    // Adicionando metódo para recalcular o total cost quando inserida uma nova WorkOrder
-    private void updateTotalCost(Work work) {
-        Long totalCost = work.getOrders().stream()
-                .mapToLong(WorkOrder::getCost)
-                .sum();
-
-        work.setTotalCost(totalCost);
+        return Optional.of(workOrderService.save(workOrder));
     }
 }

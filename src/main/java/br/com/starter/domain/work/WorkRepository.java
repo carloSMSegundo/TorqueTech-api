@@ -1,5 +1,6 @@
 package br.com.starter.domain.work;
 
+import br.com.starter.domain.garage.Garage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -200,5 +202,17 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("garageId") UUID garageId,
             @Param("mechanicId") UUID mechanicId
     );
+
+    @Query("""
+    SELECT w FROM Work w
+    WHERE w.id = :workId
+    AND w.garage.id = :garageId
+""")
+    Optional<Work> findByIdAndGarageId(
+            @Param("workId") UUID workId,
+            @Param("garageId") UUID garageId
+    );
+
+    boolean existsByTitleAndGarageAndCreatedAtAfter(String title, Garage garage, LocalDateTime oneMinuteAgo);
 }
 

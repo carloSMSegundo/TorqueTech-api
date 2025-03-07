@@ -4,13 +4,10 @@ import br.com.starter.domain.manager.ManagerService;
 import br.com.starter.domain.mechanic.MechanicService;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.user.UserStatus;
-import br.com.starter.domain.work.Work;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,14 +58,5 @@ public class GarageService {
             return Optional.of(manager.get().getGarage());
 
         return  garageRepository.findByOwner(user.getId());
-    }
-
-    public void validateUserGarage(User user, Work work) {
-        Garage userGarage = getByUser(user).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não possui uma oficina registrada"));
-
-        if (!work.getGarage().getId().equals(userGarage.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado");
-        }
     }
 }

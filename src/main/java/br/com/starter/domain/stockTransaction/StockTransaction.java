@@ -2,6 +2,7 @@ package br.com.starter.domain.stockTransaction;
 
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.stockItem.StockItem;
+import br.com.starter.domain.transactionItem.TransactionItem;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.workOrder.WorkOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -9,8 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.engine.internal.Cascade;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,9 +37,13 @@ public class StockTransaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
-    @ManyToOne
-    @JoinColumn(name = "stock_item_id", nullable = false)
-    private StockItem stockItem;
+    @ManyToMany
+    @JoinTable(
+        name = "stock_transaction_items",
+        joinColumns = @JoinColumn(name = "stock_transaction_id"),
+        inverseJoinColumns = @JoinColumn(name = "transaction_item_id")
+    )
+    private List<TransactionItem> items = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "work_order_id", nullable = false)

@@ -44,8 +44,9 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
 
     @Query("""
         SELECT distinct s.id FROM StockTransaction s
+        JOIN s.items i
         WHERE s.garage.id = :garageId
-        AND s.stockItem.item.id in :itemIds
+        AND i.stockItem.item.id in :itemIds
     """)
    Set<UUID> findByItemsFilter(
         @Param("garageId") UUID garageId,
@@ -84,10 +85,11 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
 
     @Query("""
         SELECT distinct s.id  FROM StockTransaction s
+        JOIN s.items i
         WHERE s.garage.id = :garageId
         AND (
             :query IS NULL
-            OR LOWER(s.stockItem.item) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(i.stockItem.item) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
     Set<UUID> findByItemNameFilters(

@@ -3,17 +3,21 @@ package br.com.starter.application.useCase.stockTransaction;
 import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
+import br.com.starter.domain.stockItem.StockItem;
 import br.com.starter.domain.stockItem.StockItemService;
 import br.com.starter.domain.stockTransaction.StockTransaction;
 import br.com.starter.domain.stockTransaction.StockTransactionService;
 import br.com.starter.domain.stockTransaction.TransactionStatus;
 import br.com.starter.domain.stockTransaction.TransactionType;
+import br.com.starter.domain.transactionItem.TransactionItem;
 import br.com.starter.domain.user.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +28,7 @@ public class CancelStockTransactionUseCase {
     private final StockItemService stockItemService;
     private final GarageService garageService;
 
+    @Transactional
     public Optional<?> handler(
         User user,
         UUID stockTransactionId
@@ -45,16 +50,24 @@ public class CancelStockTransactionUseCase {
             )
         );
 
-        var stockItem = stockItemService.findById(
-            stockTransaction.getStockItem().getId(),
-            garage
-        ).orElseThrow();
-
-        stockItem.setQuantity(stockItem.getQuantity() + stockTransaction.getQuantity());
-        stockItemService.save(stockItem);
-
+        stockTransaction.getItems().forEach(item -> cancelTransactionItem(stockTransaction, item));
         stockTransaction.setStatus(TransactionStatus.CANCELLED);
 
         return Optional.of(stockTransactionService.save(stockTransaction));
+    }
+
+    private void cancelTransactionItem (StockTransaction transaction, TransactionItem item) {
+        var stockItem = stockItemService.findById(
+            item.getStockItem().getId(),
+            transaction.getGarage()
+        ).orElseThrow();
+
+       if(transaction.getType() == TransactionType.INPUT) {
+           stockItem.setQuantity( stockItem.getQuantity() - item.getQuantity());
+       } else {
+           stockItem.setQuantity( stockItem.getQuantity() + item.getQuantity());
+       }
+
+       stockItemService.save(stockItem);
     }
 }

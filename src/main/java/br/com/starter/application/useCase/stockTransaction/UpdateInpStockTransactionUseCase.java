@@ -1,13 +1,18 @@
 package br.com.starter.application.useCase.stockTransaction;
 
+import br.com.starter.application.api.stockTransaction.dtos.InputStockItemDTO;
 import br.com.starter.application.api.stockTransaction.dtos.InputStockTransactionRequest;
 import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.item.ItemService;
 import br.com.starter.domain.local.LocalService;
+import br.com.starter.domain.stockItem.StockItem;
 import br.com.starter.domain.stockItem.StockItemService;
+import br.com.starter.domain.stockTransaction.StockTransaction;
 import br.com.starter.domain.stockTransaction.StockTransactionService;
+import br.com.starter.domain.stockTransaction.TransactionType;
+import br.com.starter.domain.transactionItem.TransactionItem;
 import br.com.starter.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,47 +57,98 @@ public class UpdateInpStockTransactionUseCase {
             )
         );
 
-        var stockItem = stockItemService.findById(
-            stockTransaction.getStockItem().getId(),
-            garage
-        ).orElseThrow();
+        stockTransaction = updateStockTransaction(stockTransaction, request);
 
-        // Adiciona a quantidade que foi adicionada anteriormente
-        stockItem.setQuantity(stockItem.getQuantity() - stockTransaction.getQuantity());
+        var transactionItems = new ArrayList<TransactionItem>();
+        StockTransaction finalStockTransaction = stockTransaction;
 
-        if(request.getItemId() != null) {
-            var item = itemService.getById(request.getItemId(), garage).orElseThrow(() ->
-                new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Item não encontrado!"
-                )
-            );
+        request.getItems().forEach(item -> {
+            var transactionItem = updateStockItem(finalStockTransaction, item);
+            transactionItems.add(transactionItem);
+        });
 
-            stockItem.setItem(item);
-        }
+        finalStockTransaction.getItems().clear();
+        finalStockTransaction.setItems(transactionItems);
 
-        if(request.getLocalId() != null) {
-            var local = localService.getByIdAndGarageId(request.getLocalId(), garage.getId()).orElseThrow(() ->
-                new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Item não encontrado!"
-                )
-            );
+        return Optional.of(stockTransactionService.save(finalStockTransaction));
+    }
 
-            stockItem.setLocal(local);
-        }
-
-        stockItem.setAcquisitionPrice(request.getAcquisitionUnitPrice());
-        stockItem.setPrice(request.getPrice());
-        stockItem.setQuantity(stockItem.getQuantity() + request.getQuantity());
-
-        stockItemService.save(stockItem);
-
+    public StockTransaction updateStockTransaction(
+         StockTransaction stockTransaction,
+        InputStockTransactionRequest request
+    ) {
         stockTransaction.setCategory(request.getCategory());
-        stockTransaction.setQuantity(request.getQuantity());
-        stockTransaction.setPrice(request.getPrice());
         stockTransaction.setTransactionDate(request.getTransactionAt());
 
-        return Optional.of(stockTransactionService.save(stockTransaction));
+        var transActionTotalQuantity = request.getItems().stream()
+            .map(InputStockItemDTO::getQuantity)
+            .reduce(0, Integer::sum);
+
+        var transActionTotalItemsPrice = request.getItems().stream()
+            .map(InputStockItemDTO::getPrice)
+            .reduce(0L, Long::sum);
+
+        stockTransaction.setQuantity(transActionTotalQuantity);
+        stockTransaction.setPrice(transActionTotalItemsPrice * transActionTotalQuantity);
+
+        return stockTransaction;
+    }
+
+    private TransactionItem updateStockItem (
+        StockTransaction stockTransaction,
+        InputStockItemDTO itemRequest
+    ) {
+        var transActionItem = new TransactionItem();
+        StockItem stockItem = null;
+
+        if(itemRequest.getStockItemId() != null){
+            stockItem = stockItemService.findById(
+                itemRequest.getStockItemId(),
+                stockTransaction.getGarage()
+            ).orElse(null);
+
+            if(stockItem != null) {
+                StockItem finalStockItem = stockItem;
+                var transActionitem =stockTransaction.getItems().stream()
+                    .filter(item -> item.getStockItem().getId() == finalStockItem.getId())
+                    .findFirst().orElseThrow();
+
+                stockItem.setQuantity(stockItem.getQuantity() - transActionitem.getQuantity());
+            }
+        }
+
+        if (stockItem == null) {
+            stockItem = new StockItem();
+            stockItem.setGarage(stockTransaction.getGarage());
+        }
+
+        var item = itemService.getById(itemRequest.getItemId(), stockTransaction.getGarage()).orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Item não encontrado!"
+            )
+        );
+
+        var local = localService.getByIdAndGarageId(itemRequest.getLocalId(), stockTransaction.getGarage().getId()).orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Item não encontrado!"
+            )
+        );
+
+        stockItem.setItem(item);
+        stockItem.setLocal(local);
+        stockItem.setAcquisitionPrice(itemRequest.getAcquisitionUnitPrice());
+        stockItem.setPrice(itemRequest.getPrice());
+        stockItem.setAcquisitionAt(stockTransaction.getTransactionDate().toLocalDate());
+
+        stockItem.setQuantity(stockItem.getQuantity() + itemRequest.getQuantity());
+
+        stockItem = stockItemService.save(stockItem);
+
+        transActionItem.setStockItem(stockItem);
+        transActionItem.setQuantity(itemRequest.getQuantity());
+
+        return transActionItem;
     }
 }

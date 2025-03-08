@@ -49,8 +49,8 @@ public class CreateWorkOrderRequestUseCase {
 
         // TODO implementar a lógica envolvendo StockTransation
 
-        work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
-        workService.updateTotalCost(work);
+        // work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
+        // workService.updateTotalCost(work);
 
         workService.save(work);
         return Optional.of(workOrderService.save(workOrder));

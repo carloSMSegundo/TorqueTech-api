@@ -53,8 +53,8 @@ public class UpdateWorkOrderUseCase {
             work.getOrders().remove(workOrder);
         }
 
-        workService.updateTotalCost(work);
-        work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
+        // workService.updateTotalCost(work);
+        // work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
         workService.save(work);
 
         return Optional.of(workOrderService.save(workOrder));

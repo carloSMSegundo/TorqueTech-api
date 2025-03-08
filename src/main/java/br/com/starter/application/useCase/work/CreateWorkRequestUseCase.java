@@ -58,15 +58,11 @@ public class CreateWorkRequestUseCase {
                 )
         );
 
-        if (workService.existsSimilarWork(request, garage)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uma Work semelhante já foi criada recentemente.");
-        }
-
         Work work = new Work();
         work.setTitle(request.getTitle());
         work.setDescription(request.getDescription());
         work.setStartAt(request.getStartAt());
-        // work.setExpectedAt(request.getExpectedAt());
+        work.setExpectedAt(request.getExpectedAt());
         work.setPrice(request.getPrice());
 
         Set<WorkOrder> workOrders = Optional.ofNullable(request.getWorkOrders())
@@ -87,8 +83,6 @@ public class CreateWorkRequestUseCase {
                 .collect(Collectors.toSet());
 
         work.setOrders(workOrders);
-
-        work.setExpectedAt(workService.calculateWorkExpectedAt(workOrders, work));
 
         long totalCost = workOrders.stream()
                 .mapToLong(WorkOrder::getCost)  // Obtém o custo de cada WorkOrder

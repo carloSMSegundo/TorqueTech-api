@@ -12,6 +12,7 @@ public class CreateWorkRequestDTO {
     private String title;
     private String description;
     private LocalDateTime startAt;
+    private LocalDateTime expectedAt;
     private Long price;
 
     private List<CreateWorkOrderRequestDTO> workOrders;

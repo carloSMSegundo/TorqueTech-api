@@ -31,5 +31,4 @@ public class WorkOrderService {
     public Optional<WorkOrder> getByIdAndWork(UUID workOrderId, UUID workId) {
         return workOrderRepository.findByIdAndWorkId(workOrderId, workId);
     }
-
 }

@@ -1,6 +1,7 @@
 package br.com.starter.application.api.work;
 
 import br.com.starter.application.api.common.ResponseDTO;
+import br.com.starter.application.api.local.dtos.UpdateLocalStatusRequest;
 import br.com.starter.application.api.work.dtos.*;
 import br.com.starter.application.useCase.work.*;
 import br.com.starter.domain.user.CustomUserDetails;
@@ -23,6 +24,7 @@ public class WorkController {
     private final UpdateWorkUseCase updateWorkUseCase;
     private final GetPageCustomerWorkUseCase getPageCustomerWorkUseCase;
     private final GetPageMechanicWorkUseCase getPageMechanicWorkUseCase;
+    private final UpdateWorkStatusUseCase updateWorkStatusUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -89,6 +91,18 @@ public class WorkController {
         );
     }
 
-
+    @PutMapping("/{workId}/status")
+    public ResponseEntity<?> updateStatus(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody UpdateWorkStatusRequest request,
+            @PathVariable UUID workId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        updateWorkStatusUseCase.handler(user, workId, request)
+                )
+        );
+    }
 
 }

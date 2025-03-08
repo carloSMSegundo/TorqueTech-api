@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS work_order (
     note TEXT,
     cost BIGINT,
 
+    stock_transaction_id UUID,
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_work FOREIGN KEY (work_id) REFERENCES work(id)
 );

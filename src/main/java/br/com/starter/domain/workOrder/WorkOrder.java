@@ -30,8 +30,9 @@ public class WorkOrder {
     @Enumerated(EnumType.STRING)
     private WorkOrderStatus status = WorkOrderStatus.PENDING;
 
-    @OneToMany(mappedBy = "WorkOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<StockTransaction> items = new HashSet<>();
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "stock_transaction_id", referencedColumnName = "id")
+    private StockTransaction stockTransaction;
 
     @JsonIgnore
     @ManyToOne

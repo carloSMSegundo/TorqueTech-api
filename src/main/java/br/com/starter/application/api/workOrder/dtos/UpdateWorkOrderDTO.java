@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Data
 public class UpdateWorkOrderDTO {
+    private UUID id;
     private String title;
     private String description;
     private String note;
@@ -15,6 +16,4 @@ public class UpdateWorkOrderDTO {
     private LocalDateTime startAt;
     private LocalDateTime expectedAt;
     private Long cost;
-
-    // TODO a ver o que mais pode ser modificado
 }

@@ -53,6 +53,13 @@ public class InputStockTransactionUseCase {
             )
         );
 
+        if(request.getItems().isEmpty()) {
+            throw  new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Não é possivel realizar uma transação de estoque vazia!"
+            );
+        }
+
        var stockTransaction = getStockTransaction(user, garage, request);
 
        if(stockTransaction.getItems() == null)

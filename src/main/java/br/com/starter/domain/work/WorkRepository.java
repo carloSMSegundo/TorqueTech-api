@@ -224,7 +224,21 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("timeThreshold") LocalDateTime timeThreshold
     );
 
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'PENDING'
+        AND YEAR(w.startAt) = :year
+        AND MONTH(w.startAt) = :month
+    """)
+    int countOpenWorksThisMonth(@Param("garageId") UUID garageId, @Param("year") int year, @Param("month") int month);
 
-    boolean existsByTitleAndGarageAndCreatedAtAfter(String title, Garage garage, LocalDateTime oneMinuteAgo);
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'COMPLETED'
+    """)
+    int countCompletedWorksByGarageId(@Param("garageId") UUID garageId);
+
 }
 

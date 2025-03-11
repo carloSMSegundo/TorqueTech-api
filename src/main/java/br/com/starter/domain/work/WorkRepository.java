@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -212,6 +213,17 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("workId") UUID workId,
             @Param("garageId") UUID garageId
     );
+
+    @Query("""
+    SELECT w FROM Work w
+    WHERE w.status = :status
+    AND w.startAt <= :timeThreshold
+    """)
+    List<Work> findByStatusAndStartAtBefore(
+            @Param("status") WorkStatus status,
+            @Param("timeThreshold") LocalDateTime timeThreshold
+    );
+
 
     boolean existsByTitleAndGarageAndCreatedAtAfter(String title, Garage garage, LocalDateTime oneMinuteAgo);
 }

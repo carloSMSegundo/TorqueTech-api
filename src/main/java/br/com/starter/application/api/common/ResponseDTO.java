@@ -12,7 +12,7 @@ import java.time.ZoneId;
 @AllArgsConstructor
 public class ResponseDTO <T> implements Serializable {
     private T data;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime time = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
     public ResponseDTO(T data) {

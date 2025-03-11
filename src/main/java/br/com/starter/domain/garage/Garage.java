@@ -28,6 +28,6 @@ public class Garage {
     @OneToOne
     private Address address;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime createdAt = LocalDateTime.now();
 }

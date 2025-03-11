@@ -66,7 +66,7 @@ public class InputStockTransactionUseCase {
            stockTransaction.setItems(new ArrayList<>());
 
         request.getItems().forEach(item -> {
-            var stockItem = getStockItem(garage, item, request.getTransactionAt().toLocalDate());
+            var stockItem = getStockItem(garage, item, stockTransaction);
             stockTransaction.getItems().add(stockItem);
         });
 
@@ -103,9 +103,10 @@ public class InputStockTransactionUseCase {
     public TransactionItem getStockItem (
         Garage garage,
         InputStockItemDTO itemRequest,
-        LocalDate acquisitionAt
+        StockTransaction stockTransaction
     ) {
         var transActionItem = new TransactionItem();
+        transActionItem.setTransaction(stockTransaction);
         transActionItem.setQuantity(itemRequest.getQuantity());
 
         var stockItem = stockItemService.findByItemAndPrice(
@@ -137,7 +138,7 @@ public class InputStockTransactionUseCase {
             stockItem.setLocal(local);
             stockItem.setAcquisitionPrice(itemRequest.getAcquisitionUnitPrice());
             stockItem.setPrice(itemRequest.getPrice());
-            stockItem.setAcquisitionAt(acquisitionAt);
+            stockItem.setAcquisitionAt(stockTransaction.getTransactionDate().toLocalDate());
         }
 
         stockItem.setQuantity(stockItem.getQuantity() + itemRequest.getQuantity());

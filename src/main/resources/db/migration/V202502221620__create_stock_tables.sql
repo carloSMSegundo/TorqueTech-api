@@ -39,15 +39,6 @@ CREATE TABLE IF NOT EXISTS stock_item (
     CONSTRAINT fk_stock_item_garage FOREIGN KEY (garage_id) REFERENCES garage(id)
 );
 
--- Criar a tabela TransactionItem
-CREATE TABLE IF NOT EXISTS transaction_item (
-    id UUID PRIMARY KEY NOT NULL,
-    quantity INTEGER NOT NULL,
-    stock_item_id UUID NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_transaction_item_stock_item FOREIGN KEY (stock_item_id) REFERENCES stock_item(id)
-);
-
 -- Tabela StockTransaction
 CREATE TABLE IF NOT EXISTS stock_transaction (
     id UUID PRIMARY KEY NOT NULL,
@@ -66,13 +57,13 @@ CREATE TABLE IF NOT EXISTS stock_transaction (
     CONSTRAINT fk_stock_transaction_work_order FOREIGN KEY (work_order_id) REFERENCES work_order(id)
 );
 
--- Criar a nova tabela intermediária StockTransactionItem
-CREATE TABLE IF NOT EXISTS stock_transaction_item (
+-- Criar a tabela TransactionItem
+CREATE TABLE IF NOT EXISTS transaction_item (
     id UUID PRIMARY KEY NOT NULL,
-    stock_transaction_id UUID NOT NULL,
-    transaction_item_id UUID NOT NULL,
     quantity INTEGER NOT NULL,
-    price BIGINT NOT NULL,
-    CONSTRAINT fk_stock_transaction_item_stock_transaction FOREIGN KEY (stock_transaction_id) REFERENCES stock_transaction(id),
-    CONSTRAINT fk_stock_transaction_item_transaction_item FOREIGN KEY (transaction_item_id) REFERENCES transaction_item(id)
+    stock_item_id UUID NOT NULL,
+    transaction_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_transaction_item_stock_item FOREIGN KEY (stock_item_id) REFERENCES stock_item(id),
+    CONSTRAINT fk_transaction_item_transaction FOREIGN KEY (transaction_id) REFERENCES stock_transaction(id)
 );

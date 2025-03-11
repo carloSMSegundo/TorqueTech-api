@@ -51,4 +51,6 @@ public class WorkOrder {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    // adicionar stock.. na tabela de uma vez junto com a referência
 }

@@ -1,9 +1,11 @@
 package br.com.starter.application.api.workOrder.dtos;
 
+import br.com.starter.application.api.stockTransaction.dtos.OutputStockItemDTO;
 import br.com.starter.domain.workOrder.WorkOrderStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -15,6 +17,7 @@ public class CreateWorkOrderRequestDTO {
     private LocalDateTime startAt;
     private LocalDateTime expectedAt;
     private Long cost;
+    private List<OutputStockItemDTO> stockItems;
 
     private UUID workId;
 }

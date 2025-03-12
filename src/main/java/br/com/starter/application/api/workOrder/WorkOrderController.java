@@ -2,9 +2,12 @@ package br.com.starter.application.api.workOrder;
 
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.work.dtos.UpdateWorkDTO;
+import br.com.starter.application.api.work.dtos.UpdateWorkStatusRequest;
 import br.com.starter.application.api.workOrder.dtos.CreateWorkOrderRequestDTO;
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderDTO;
+import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderStatusRequest;
 import br.com.starter.application.useCase.workOrder.CreateWorkOrderRequestUseCase;
+import br.com.starter.application.useCase.workOrder.UpdateWorkOrderStatusUseCase;
 import br.com.starter.application.useCase.workOrder.UpdateWorkOrderUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class WorkOrderController {
     private final CreateWorkOrderRequestUseCase createWorkOrderRequestUseCase;
     private final UpdateWorkOrderUseCase updateWorkOrderUseCase;
+    private final UpdateWorkOrderStatusUseCase updateWorkOrderStatusUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -46,6 +50,21 @@ public class WorkOrderController {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
                         updateWorkOrderUseCase.handler(workOrderId, workId, owner, request)
+                )
+        );
+    }
+
+    @PutMapping("/{workId}/{workOrderId}/status")
+    public ResponseEntity<?> updateStatus(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @Valid @RequestBody UpdateWorkOrderStatusRequest request,
+            @PathVariable UUID workOrderId,
+            @PathVariable UUID workId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        updateWorkOrderStatusUseCase.handler(user, workId, workOrderId, request)
                 )
         );
     }

@@ -1,8 +1,12 @@
 package br.com.starter.application.useCase.workOrder;
 
+import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.application.api.workOrder.dtos.CreateWorkOrderRequestDTO;
+import br.com.starter.application.useCase.stockTransaction.OutputStockTransactionUseCase;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
+import br.com.starter.domain.stockTransaction.StockTransaction;
+import br.com.starter.domain.stockTransaction.TransactionCategory;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.Work;
 import br.com.starter.domain.work.WorkService;
@@ -14,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -23,6 +28,7 @@ public class CreateWorkOrderRequestUseCase {
     private final WorkService workService;
     private final WorkOrderService workOrderService;
     private final GarageService garageService;
+    private final OutputStockTransactionUseCase outputStockTransactionUseCase;
 
     @Transactional
     public Optional<WorkOrder> handler(CreateWorkOrderRequestDTO request, User owner) {
@@ -45,12 +51,25 @@ public class CreateWorkOrderRequestUseCase {
         workOrder.setCost(request.getCost());
         workOrder.setWork(work);
 
+        if (request.getStockItems() != null && !request.getStockItems().isEmpty()) {
+            OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
+            stockTransactionRequest.setItems(request.getStockItems());
+            stockTransactionRequest.setTransactionAt(LocalDateTime.now());
+            stockTransactionRequest.setCategory(TransactionCategory.WORK_ORDER);
+
+            Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
+
+            if (stockTransactionOptional.isPresent()) {
+                StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
+                workOrder.setStockTransaction(stockTransaction);
+            } else {
+                throw new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR, "Falha ao criar transação de estoque!"
+                );
+            }
+        }
+
         work.getOrders().add(workOrder);
-
-        // TODO implementar a lógica envolvendo StockTransation
-
-        // work.setExpectedAt(workService.calculateWorkExpectedAt(work.getOrders(), work));
-        // workService.updateTotalCost(work);
 
         workService.save(work);
         return Optional.of(workOrderService.save(workOrder));

@@ -14,6 +14,7 @@ public class CreateWorkRequestDTO {
     private LocalDateTime startAt;
     private LocalDateTime expectedAt;
     private Long price;
+    private Long totalCost;
 
     private List<CreateWorkOrderRequestDTO> workOrders;
 

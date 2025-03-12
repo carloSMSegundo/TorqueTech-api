@@ -53,4 +53,6 @@
             @Param("customerId") UUID customerId
         );
 
+        int countByGarageId(UUID garageId);
+
     }

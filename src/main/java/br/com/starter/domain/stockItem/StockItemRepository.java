@@ -44,4 +44,17 @@ public interface StockItemRepository extends JpaRepository<StockItem, UUID> {
         @Param("garageId") UUID garageId,
         @Param("id") UUID id
     );
+
+    @Query("""
+        SELECT COUNT(DISTINCT s.item) FROM StockItem s
+        WHERE s.garage.id = :garageId
+    """)
+    int countDistinctItemsByGarageId(@Param("garageId") UUID garageId);
+
+    @Query("""
+        SELECT COALESCE(SUM(s.quantity), 0) FROM StockItem s
+        WHERE s.garage.id = :garageId
+    """)
+    int sumQuantityByGarageId(@Param("garageId") UUID garageId);
+
 }

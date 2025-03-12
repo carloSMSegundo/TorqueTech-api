@@ -1,9 +1,12 @@
 package br.com.starter.application.useCase.work;
 
+import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.application.api.work.dtos.UpdateWorkDTO;
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderDTO;
+import br.com.starter.application.useCase.stockTransaction.UpdateOutStockTransactionUseCase;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
+import br.com.starter.domain.stockTransaction.TransactionCategory;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.Work;
 import br.com.starter.domain.work.WorkService;
@@ -27,6 +30,7 @@ public class UpdateWorkUseCase {
     private final WorkService workService;
     private final GarageService garageService;
     private final WorkOrderService workOrderService;
+    private final UpdateOutStockTransactionUseCase updateOutStockTransactionUseCase;
 
     @Transactional
     public Optional<Work> handler(UUID workId, User owner, UpdateWorkDTO request) {
@@ -48,6 +52,7 @@ public class UpdateWorkUseCase {
         work.setDescription(request.getDescription());
         work.setPrice(request.getPrice());
         work.setStatus(request.getStatus());
+        work.setTotalCost(request.getTotalCost());
 
         if (request.getWorkOrders() != null) {
             for (UpdateWorkOrderDTO workOrderRequest : request.getWorkOrders()) {
@@ -65,6 +70,26 @@ public class UpdateWorkUseCase {
                 workOrder.setStartAt(workOrderRequest.getStartAt());
                 workOrder.setExpectedAt(workOrderRequest.getExpectedAt());
                 workOrder.setCost(workOrderRequest.getCost());
+
+                if (workOrderRequest.getStockItems() != null && !workOrderRequest.getStockItems().isEmpty()) {
+                    OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
+                    stockTransactionRequest.setItems(workOrderRequest.getStockItems());
+                    stockTransactionRequest.setTransactionAt(LocalDateTime.now());
+                    stockTransactionRequest.setCategory(TransactionCategory.WORK_ORDER);
+
+                    if (workOrder.getStockTransaction() != null) {
+                        updateOutStockTransactionUseCase.handler(
+                                owner,
+                                workOrder.getStockTransaction().getId(),
+                                stockTransactionRequest
+                        );
+                    } else {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "WorkOrder não possui uma StockTransaction associada!"
+                        );
+                    }
+                }
 
                 workOrderService.save(workOrder);
             }

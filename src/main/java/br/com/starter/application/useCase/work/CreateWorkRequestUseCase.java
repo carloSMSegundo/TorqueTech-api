@@ -1,12 +1,16 @@
 package br.com.starter.application.useCase.work;
 
+import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.application.api.work.dtos.CreateWorkRequestDTO;
+import br.com.starter.application.useCase.stockTransaction.OutputStockTransactionUseCase;
 import br.com.starter.domain.customer.Customer;
 import br.com.starter.domain.customer.CustomerService;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.mechanic.Mechanic;
 import br.com.starter.domain.mechanic.MechanicService;
+import br.com.starter.domain.stockTransaction.StockTransaction;
+import br.com.starter.domain.stockTransaction.TransactionCategory;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.vehicle.Vehicle;
 import br.com.starter.domain.vehicle.VehicleService;
@@ -21,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ public class CreateWorkRequestUseCase {
     private final CustomerService customerService;
     private final MechanicService mechanicService;
     private final GarageService garageService;
+    private final OutputStockTransactionUseCase outputStockTransactionUseCase;
 
     @Transactional
     public Optional<Work> handler(CreateWorkRequestDTO request, User owner) {
@@ -64,6 +68,7 @@ public class CreateWorkRequestUseCase {
         work.setStartAt(request.getStartAt());
         work.setExpectedAt(request.getExpectedAt());
         work.setPrice(request.getPrice());
+        work.setTotalCost(request.getTotalCost());
 
         Set<WorkOrder> workOrders = Optional.ofNullable(request.getWorkOrders())
                 .orElse(Collections.emptyList())
@@ -78,17 +83,29 @@ public class CreateWorkRequestUseCase {
                     workOrder.setNote(workOrderRequest.getNote());
                     workOrder.setWork(work);
 
+                    if (workOrderRequest.getStockItems() != null && !workOrderRequest.getStockItems().isEmpty()) {
+                        OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
+                        stockTransactionRequest.setItems(workOrderRequest.getStockItems());
+                        stockTransactionRequest.setTransactionAt(LocalDateTime.now());
+                        stockTransactionRequest.setCategory(TransactionCategory.WORK_ORDER);
+
+                        Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
+
+                        if (stockTransactionOptional.isPresent()) {
+                            StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
+                            workOrder.setStockTransaction(stockTransaction);
+                        } else {
+                            throw new ResponseStatusException(
+                                    HttpStatus.INTERNAL_SERVER_ERROR,
+                                    "Falha ao criar transação de estoque!"
+                            );
+                        }
+                    }
                     return workOrder;
                 })
                 .collect(Collectors.toSet());
 
         work.setOrders(workOrders);
-
-        long totalCost = workOrders.stream()
-                .mapToLong(WorkOrder::getCost)  // Obtém o custo de cada WorkOrder
-                .sum();  // Soma os custos
-
-        work.setTotalCost(totalCost); // seta o custo total
 
         work.setMechanic(mechanic);
         work.setOwner(owner);

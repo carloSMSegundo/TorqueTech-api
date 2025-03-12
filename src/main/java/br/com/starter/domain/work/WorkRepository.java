@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -213,6 +214,31 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("garageId") UUID garageId
     );
 
-    boolean existsByTitleAndGarageAndCreatedAtAfter(String title, Garage garage, LocalDateTime oneMinuteAgo);
+    @Query("""
+    SELECT w FROM Work w
+    WHERE w.status = :status
+    AND w.startAt <= :timeThreshold
+    """)
+    List<Work> findByStatusAndStartAtBefore(
+            @Param("status") WorkStatus status,
+            @Param("timeThreshold") LocalDateTime timeThreshold
+    );
+
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'PENDING'
+        AND YEAR(w.startAt) = :year
+        AND MONTH(w.startAt) = :month
+    """)
+    int countOpenWorksThisMonth(@Param("garageId") UUID garageId, @Param("year") int year, @Param("month") int month);
+
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'COMPLETED'
+    """)
+    int countCompletedWorksByGarageId(@Param("garageId") UUID garageId);
+
 }
 

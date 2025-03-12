@@ -82,6 +82,7 @@ public class OutputStockTransactionUseCase {
     ) {
         var transActionItem = new TransactionItem();
         transActionItem.setQuantity(itemRequest.getQuantity());
+        transActionItem.setTransaction(transaction);
 
         var stockItem = stockItemService.findById(
             itemRequest.getStockItemId(),

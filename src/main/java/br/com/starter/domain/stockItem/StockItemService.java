@@ -26,6 +26,6 @@ public class StockItemService {
     }
 
     public Optional<StockItem> findById(UUID id, Garage garage) {
-        return stockItemRepository.findByIdAndGarageId(id, garage.getId());
+        return stockItemRepository.findByIdAndGarageId(garage.getId(), id);
     }
 }

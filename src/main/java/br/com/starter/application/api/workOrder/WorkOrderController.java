@@ -1,14 +1,11 @@
 package br.com.starter.application.api.workOrder;
 
+import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
-import br.com.starter.application.api.work.dtos.UpdateWorkDTO;
-import br.com.starter.application.api.work.dtos.UpdateWorkStatusRequest;
 import br.com.starter.application.api.workOrder.dtos.CreateWorkOrderRequestDTO;
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderDTO;
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderStatusRequest;
-import br.com.starter.application.useCase.workOrder.CreateWorkOrderRequestUseCase;
-import br.com.starter.application.useCase.workOrder.UpdateWorkOrderStatusUseCase;
-import br.com.starter.application.useCase.workOrder.UpdateWorkOrderUseCase;
+import br.com.starter.application.useCase.workOrder.*;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,8 @@ public class WorkOrderController {
     private final CreateWorkOrderRequestUseCase createWorkOrderRequestUseCase;
     private final UpdateWorkOrderUseCase updateWorkOrderUseCase;
     private final UpdateWorkOrderStatusUseCase updateWorkOrderStatusUseCase;
+    private final GetListWorkOrderUseCase getListWorkOrderUseCase;
+    private final GetPageWorkOrderUseCase getPageWorkOrderUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -65,6 +64,34 @@ public class WorkOrderController {
         return ResponseEntity.ok(
                 new ResponseDTO<>(
                         updateWorkOrderStatusUseCase.handler(user, workId, workOrderId, request)
+                )
+        );
+    }
+
+    @GetMapping("/{workId}")
+    public ResponseEntity<?> getList(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID workId
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        getListWorkOrderUseCase.handler(user, workId)
+                )
+        );
+    }
+
+    @GetMapping("/{workId}/page/{page}")
+    public ResponseEntity<?> getPage(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @PathVariable UUID workId,
+            @PathVariable Integer page,
+            @RequestBody GetPageRequest request
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                        getPageWorkOrderUseCase.handler(user, workId, page, request)
                 )
         );
     }

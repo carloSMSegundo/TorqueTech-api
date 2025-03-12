@@ -1,6 +1,5 @@
 package br.com.starter.domain.work;
 
-import br.com.starter.domain.garage.Garage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -224,7 +223,7 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             @Param("timeThreshold") LocalDateTime timeThreshold
     );
 
-    @Query("""
+    /*@Query("""
         SELECT COUNT(w) FROM Work w
         WHERE w.garage.id = :garageId
         AND w.status = 'PENDING'
@@ -238,7 +237,42 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
         WHERE w.garage.id = :garageId
         AND w.status = 'COMPLETED'
     """)
-    int countCompletedWorksByGarageId(@Param("garageId") UUID garageId);
+    int countCompletedWorksByGarageId(@Param("garageId") UUID garageId);*/
 
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'OPEN'
+        AND w.createdAt
+        BETWEEN :startDate AND :endDate
+    """)
+    int countOpenWorksBetweenDates(@Param("garageId") UUID garageId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("""
+        SELECT COUNT(w) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'COMPLETED'
+        AND w.concludedAt
+        BETWEEN :startDate AND :endDate
+    """)
+    int countCompletedWorksBetweenDates(@Param("garageId") UUID garageId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("""
+        SELECT SUM(w.price) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'COMPLETED'
+        AND w.concludedAt
+        BETWEEN :startDate AND :endDate
+    """)
+    Double sumCompletedWorksRevenue(@Param("garageId") UUID garageId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("""
+        SELECT SUM(w.price) FROM Work w
+        WHERE w.garage.id = :garageId
+        AND w.status = 'PENDING'
+        AND w.createdAt
+        BETWEEN :startDate AND :endDate
+    """)
+    Double sumPendingWorksRevenue(@Param("garageId") UUID garageId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
 

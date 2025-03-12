@@ -12,4 +12,6 @@ public class DashboardMetricsDTO {
     private int totalMechanics;
     private int openWorksThisMonth;
     private int completedWorks;
+    private double revenueFromCompletedWorks;
+    private double pendingRevenueFromOpenWorks;
 }

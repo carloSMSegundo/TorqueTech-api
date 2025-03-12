@@ -6,13 +6,17 @@ import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/torque/api/dashboard")
@@ -22,7 +26,10 @@ public class DashboardController {
     private final GarageService garageService;
 
     @GetMapping
-    public ResponseEntity<?> getDashboard(@AuthenticationPrincipal CustomUserDetails userAuthentication) {
+    public ResponseEntity<?> getDashboard(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate) {
         var user = userAuthentication.getUser();
 
         Garage garage = garageService.getByUser(user)
@@ -30,7 +37,12 @@ public class DashboardController {
                         HttpStatus.BAD_REQUEST, "O usuário não possui uma oficina registrada"
                 ));
 
-        var metrics = dashboardService.getMetricsForGarage(garage.getId());
+        if (startDate == null || endDate == null) {
+            startDate = LocalDateTime.now().withDayOfMonth(1);
+            endDate = LocalDateTime.now();
+        }
+
+        var metrics = dashboardService.getMetricsForGarage(garage.getId(), startDate, endDate);
 
         return ResponseEntity.ok(new ResponseDTO<>(metrics));
     }

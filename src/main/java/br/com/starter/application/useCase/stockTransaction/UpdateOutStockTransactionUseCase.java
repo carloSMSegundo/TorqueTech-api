@@ -86,6 +86,7 @@ public class UpdateOutStockTransactionUseCase {
         OutputStockItemDTO itemRequest
     ) {
         var transActionItem = new TransactionItem();
+        transActionItem.setTransaction(stockTransaction);
         transActionItem.setQuantity(itemRequest.getQuantity());
 
         var stockItem = stockItemService.findById(

@@ -99,6 +99,7 @@ public class UpdateInpStockTransactionUseCase {
         InputStockItemDTO itemRequest
     ) {
         var transActionItem = new TransactionItem();
+        transActionItem.setTransaction(stockTransaction);
         StockItem stockItem = null;
 
         if(itemRequest.getStockItemId() != null){

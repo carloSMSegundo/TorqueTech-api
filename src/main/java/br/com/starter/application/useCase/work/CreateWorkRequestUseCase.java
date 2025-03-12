@@ -83,24 +83,26 @@ public class CreateWorkRequestUseCase {
                     workOrder.setNote(workOrderRequest.getNote());
                     workOrder.setWork(work);
 
+                    OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
+                    stockTransactionRequest.setTransactionAt(LocalDateTime.now());
+                    stockTransactionRequest.setCategory(TransactionCategory.WORK_ORDER);
+
                     if (workOrderRequest.getStockItems() != null && !workOrderRequest.getStockItems().isEmpty()) {
-                        OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
                         stockTransactionRequest.setItems(workOrderRequest.getStockItems());
-                        stockTransactionRequest.setTransactionAt(LocalDateTime.now());
-                        stockTransactionRequest.setCategory(TransactionCategory.WORK_ORDER);
-
-                        Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
-
-                        if (stockTransactionOptional.isPresent()) {
-                            StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
-                            workOrder.setStockTransaction(stockTransaction);
-                        } else {
-                            throw new ResponseStatusException(
-                                    HttpStatus.INTERNAL_SERVER_ERROR,
-                                    "Falha ao criar transação de estoque!"
-                            );
-                        }
+                    } else {
+                        stockTransactionRequest.setItems(Collections.emptyList());
                     }
+
+                    Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
+
+                    if (stockTransactionOptional.isPresent()) {
+                        StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
+                        // TODO stockTransaction.setWorkOrder(workOrder); // dando erro n consigo setar
+                        workOrder.setStockTransaction(stockTransaction);
+                    } else {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Falha ao criar transação de estoque!");
+                    }
+
                     return workOrder;
                 })
                 .collect(Collectors.toSet());

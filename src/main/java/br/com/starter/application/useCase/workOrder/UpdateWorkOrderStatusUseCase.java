@@ -1,6 +1,7 @@
 package br.com.starter.application.useCase.workOrder;
 
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderStatusRequest;
+import br.com.starter.application.useCase.stockTransaction.CancelStockTransactionUseCase;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.user.User;
@@ -25,6 +26,7 @@ public class UpdateWorkOrderStatusUseCase {
     private final WorkService workService;
     private final WorkOrderService workOrderService;
     private final GarageService garageService;
+    private final CancelStockTransactionUseCase cancelStockTransactionUseCase;
 
     @Transactional
     public Optional<WorkOrder> handler(User user, UUID workId, UUID workOrderId, UpdateWorkOrderStatusRequest request) {
@@ -50,6 +52,7 @@ public class UpdateWorkOrderStatusUseCase {
             workOrder.setConcludedAt(LocalDateTime.now());
         } else if (request.getStatus() == WorkOrderStatus.DELETED) {
             workOrder.setDeletedAt(LocalDateTime.now());
+            cancelStockTransactionUseCase.handler(user, workOrder.getStockTransaction().getId());
         }
 
         return Optional.of(workOrderService.save(workOrder));

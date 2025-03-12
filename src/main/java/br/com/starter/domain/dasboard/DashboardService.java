@@ -8,7 +8,8 @@ import br.com.starter.domain.work.WorkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,15 +20,25 @@ public class DashboardService {
     private final MechanicRepository mechanicRepository;
     private final WorkRepository workRepository;
 
-    public DashboardMetricsDTO getMetricsForGarage(UUID garageId)
+    public DashboardMetricsDTO getMetricsForGarage(UUID garageId, LocalDateTime startDate, LocalDateTime endDate)
     {
         int varietyOfProducts = stockItemRepository.countDistinctItemsByGarageId(garageId);
         int totalProductsInStock = stockItemRepository.sumQuantityByGarageId(garageId);
         int totalCustomers = customerRepository.countByGarageId(garageId);
         int totalMechanics = mechanicRepository.countByGarageId(garageId);
-        int openWorksThisMonth = workRepository.countOpenWorksThisMonth(garageId, LocalDate.now().getYear(), LocalDate.now().getMonthValue());
-        int completedWorks = workRepository.countCompletedWorksByGarageId(garageId);
 
-        return new DashboardMetricsDTO(varietyOfProducts, totalProductsInStock, totalCustomers, totalMechanics, openWorksThisMonth, completedWorks);
+        int openWorks = workRepository.countOpenWorksBetweenDates(garageId, startDate, endDate);
+        int completedWorks = workRepository.countCompletedWorksBetweenDates(garageId, startDate, endDate);
+
+        double revenueFromCompletedWorks = Optional.ofNullable(workRepository.sumCompletedWorksRevenue(garageId, startDate, endDate))
+                                                    .orElse(0.0);
+
+        double pendingRevenueFromOpenWorks = Optional.ofNullable(workRepository.sumPendingWorksRevenue(garageId, startDate, endDate))
+                .orElse(0.0);
+
+        return new DashboardMetricsDTO(
+                varietyOfProducts, totalProductsInStock, totalCustomers, totalMechanics,
+                openWorks, completedWorks, revenueFromCompletedWorks, pendingRevenueFromOpenWorks
+        );
     }
 }

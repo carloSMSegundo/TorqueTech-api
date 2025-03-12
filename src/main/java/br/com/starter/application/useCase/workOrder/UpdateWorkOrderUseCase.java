@@ -2,12 +2,12 @@ package br.com.starter.application.useCase.workOrder;
 
 import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.application.api.workOrder.dtos.UpdateWorkOrderDTO;
+import br.com.starter.application.useCase.stockTransaction.CancelStockTransactionUseCase;
 import br.com.starter.application.useCase.stockTransaction.OutputStockTransactionUseCase;
 import br.com.starter.application.useCase.stockTransaction.UpdateOutStockTransactionUseCase;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.stockTransaction.StockTransaction;
-import br.com.starter.domain.stockTransaction.StockTransactionService;
 import br.com.starter.domain.stockTransaction.TransactionCategory;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.Work;
@@ -33,6 +33,7 @@ public class UpdateWorkOrderUseCase {
     private final WorkOrderService workOrderService;
     private final UpdateOutStockTransactionUseCase updateOutStockTransactionUseCase;
     private final OutputStockTransactionUseCase outputStockTransactionUseCase;
+    private final CancelStockTransactionUseCase cancelStockTransactionUseCase;
 
     @Transactional
     public Optional<WorkOrder> handler(UUID workOrderId, UUID workId, User owner, UpdateWorkOrderDTO request) {
@@ -84,6 +85,7 @@ public class UpdateWorkOrderUseCase {
             workOrder.setConcludedAt(LocalDateTime.now());
         } else if (request.getStatus() == WorkOrderStatus.DELETED) {
             workOrder.setDeletedAt(LocalDateTime.now());
+            cancelStockTransactionUseCase.handler(owner, workOrder.getStockTransaction().getId());
             work.getOrders().remove(workOrder);
         }
 

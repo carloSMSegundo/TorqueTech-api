@@ -27,6 +27,4 @@ public class Mechanic {
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    // Talvez depois será preciso passar adress
 }

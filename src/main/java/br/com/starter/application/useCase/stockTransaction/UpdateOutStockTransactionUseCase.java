@@ -11,6 +11,7 @@ import br.com.starter.domain.stockTransaction.StockTransaction;
 import br.com.starter.domain.stockTransaction.StockTransactionService;
 import br.com.starter.domain.stockTransaction.TransactionStatus;
 import br.com.starter.domain.transactionItem.TransactionItem;
+import br.com.starter.domain.transactionItem.TransactionItemService;
 import br.com.starter.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UpdateOutStockTransactionUseCase {
     private final StockTransactionService stockTransactionService;
+    private final TransactionItemService transactionItemService;
     private final StockItemService stockItemService;
     private final GarageService garageService;
 
@@ -75,6 +77,7 @@ public class UpdateOutStockTransactionUseCase {
             transactionItems.add(transactionitem);
         });
 
+        transactionItemService.deleteAll(stockTransaction.getItems());
         stockTransaction.getItems().clear();
         stockTransaction.setItems(transactionItems);
 

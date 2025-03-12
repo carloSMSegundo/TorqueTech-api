@@ -54,4 +54,8 @@ public class MechanicService {
     public Optional<Mechanic> getByIdAndGarageId(UUID mechanicId, UUID garageId) {
         return mechanicRepository.findByIdAndGarageId(mechanicId, garageId);
     }
+
+    public List<Mechanic> findByGarageId(UUID garageId) {
+        return mechanicRepository.findByGarageId(garageId);
+    }
 }

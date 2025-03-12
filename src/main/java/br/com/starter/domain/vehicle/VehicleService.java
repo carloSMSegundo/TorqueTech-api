@@ -50,6 +50,10 @@ public class VehicleService {
         );
     }
 
+    public List<Vehicle> findAllByCustomer(UUID customerId) {
+        return vehicleRepository.findAllByCustomer(customerId);
+    }
+
     public Page<Vehicle> findByCustomerAndGarage(
             UUID customerId,
             UUID garageId,

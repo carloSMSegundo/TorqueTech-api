@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,13 +35,21 @@ public interface MechanicRepository extends JpaRepository<Mechanic, UUID> {
     );
 
     @Query("""
-    SELECT mechanic FROM Mechanic mechanic
-    WHERE mechanic.id = :id
-    AND mechanic.garage.id = :garageId
-""")
+        SELECT mechanic FROM Mechanic mechanic
+        WHERE mechanic.id = :id
+        AND mechanic.garage.id = :garageId
+    """)
     Optional<Mechanic> findByIdAndGarageId(
             @Param("id") UUID id,
             @Param("garageId") UUID garageId
+    );
+
+    @Query("""
+        SELECT mechanic FROM Mechanic mechanic
+        WHERE mechanic.garage.id = :garageId
+    """)
+    List<Mechanic> findByGarageId(
+        @Param("garageId") UUID garageId
     );
 
     int countByGarageId(UUID garageId);

@@ -4,10 +4,7 @@ import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.mechanic.dtos.CreateMechanicDTO;
 import br.com.starter.application.api.mechanic.dtos.UpdateMechanicDTO;
-import br.com.starter.application.useCase.mechanic.CreateMechanicUseCase;
-import br.com.starter.application.useCase.mechanic.GetMechanicUseCase;
-import br.com.starter.application.useCase.mechanic.GetPageMechanicUseCase;
-import br.com.starter.application.useCase.mechanic.UpdateMechanicUseCase;
+import br.com.starter.application.useCase.mechanic.*;
 import br.com.starter.domain.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,7 @@ public class MechanicController {
     private final GetPageMechanicUseCase getPageMechanicUseCase;
     private final GetMechanicUseCase getMechanicUseCase;
     private final UpdateMechanicUseCase updateMechanicUseCase;
+    private final GetAllMechanicsUseCase getAllMechanicsUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -78,4 +76,14 @@ public class MechanicController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAll(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication
+    ) {
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getAllMechanicsUseCase.handler(userAuthentication.getUser())
+            )
+        );
+    }
 }

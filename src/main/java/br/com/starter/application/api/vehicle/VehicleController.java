@@ -29,6 +29,7 @@ public class VehicleController {
     private final GetVehicleUseCase getVehicleUseCase;
     private final GetPageVehicleByCustomerUseCase getPageVehicleByCustomerUseCase;
     private final UpdateVehicleUseCase updateVehicleUseCase;
+    private final GetAllVehiclesByCustomerUseCase getAllVehiclesUseCase;
 
 
     @PostMapping
@@ -96,4 +97,15 @@ public class VehicleController {
         );
     }
 
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<?> getAllByCustomer(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID customerId
+    ) {
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getAllVehiclesUseCase.handler(customerId)
+            )
+        );
+    }
 }

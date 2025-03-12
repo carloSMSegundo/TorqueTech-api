@@ -26,9 +26,11 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     @Query("""
         SELECT s FROM StockTransaction s
         WHERE s.id in :ids
+        AND s.type = :type
     """)
     Page<StockTransaction> findAllByIds(
         @Param("ids") Set<UUID> ids,
+        @Param("type") TransactionType type,
         Pageable pageable
     );
 
@@ -64,13 +66,14 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     );
 
     @Query("""
-        SELECT distinct s.id FROM StockTransaction s
+        SELECT s FROM StockTransaction s
         WHERE s.garage.id = :garageId
         AND s.type = :type
     """)
-    Set<UUID> findByTransactionTypeFilter(
+    Page<StockTransaction> findAllByGarageAndType(
         @Param("garageId") UUID garageId,
-        @Param("type") TransactionType type
+        @Param("type") TransactionType type,
+        Pageable pageable
     );
 
     @Query("""
@@ -89,7 +92,7 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
         WHERE s.garage.id = :garageId
         AND (
             :query IS NULL
-            OR LOWER(i.stockItem.item) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(i.stockItem.item.name) LIKE LOWER(CONCAT('%', :query, '%'))
         )
     """)
     Set<UUID> findByItemNameFilters(

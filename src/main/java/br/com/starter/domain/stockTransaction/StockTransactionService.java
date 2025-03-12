@@ -30,12 +30,16 @@ public class StockTransactionService {
         return stockTransactionRepository.findAll(pageable);
     }
 
+    public Page<StockTransaction> findAllByGarageAndType(UUID garageId, TransactionType type, Pageable pageable) {
+        return stockTransactionRepository.findAllByGarageAndType(garageId, type,pageable);
+    }
+
     public List<StockTransaction> getAllByIds(Set<UUID> ids) {
         return stockTransactionRepository.findAllByIds(ids);
     }
 
-    public Page<StockTransaction> getAllByIds(Set<UUID> ids, Pageable pageable) {
-        return stockTransactionRepository.findAllByIds(ids, pageable);
+    public Page<StockTransaction> getAllByIds(Set<UUID> ids, TransactionType type, Pageable pageable) {
+        return stockTransactionRepository.findAllByIds(ids, type, pageable);
     }
 
     public Set<UUID> getPageFilterIds (
@@ -67,15 +71,6 @@ public class StockTransactionService {
             mapper = mountMapper(mapper, ids);
         }
 
-        if (request.getTransactionType() != null) {
-            var ids = stockTransactionRepository.findByTransactionTypeFilter(
-                garage.getId(),
-                request.getTransactionType()
-            );
-
-            mapper = mountMapper(mapper, ids);
-        }
-
         if (request.getCategory() != null) {
             var ids = stockTransactionRepository.findByTransactionCategoryFilter(
                 garage.getId(),
@@ -85,7 +80,7 @@ public class StockTransactionService {
             mapper = mountMapper(mapper, ids);
         }
 
-        if (request.getQuery() != null) {
+        if (request.getQuery() != null && !request.getQuery().isEmpty()) {
             var ids = stockTransactionRepository.findByItemNameFilters(
                 garage.getId(),
                 request.getQuery()

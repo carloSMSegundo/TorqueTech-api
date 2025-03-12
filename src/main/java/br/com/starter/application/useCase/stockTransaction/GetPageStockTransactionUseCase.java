@@ -36,8 +36,16 @@ public class GetPageStockTransactionUseCase {
         var pageRequest = PageRequest.of(page, request.getSize());
 
         var content = ids != null
-            ? stockTransactionService.getAllByIds(ids, pageRequest)
-            : stockTransactionService.getAll(pageRequest);
+            ? stockTransactionService.getAllByIds(
+                ids,
+                request.getTransactionType(),
+                pageRequest
+            )
+            : stockTransactionService.findAllByGarageAndType(
+                garage.getId(),
+                request.getTransactionType(),
+                pageRequest
+            );
 
         return Optional.of(content);
     }

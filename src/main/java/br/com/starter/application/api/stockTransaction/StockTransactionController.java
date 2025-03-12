@@ -120,7 +120,7 @@ public class StockTransactionController {
     public ResponseEntity<?> page(
             @AuthenticationPrincipal CustomUserDetails userAuthentication,
             @PathVariable Integer page,
-            @RequestBody GetPageStockTransactionRequest request
+            @Valid @RequestBody GetPageStockTransactionRequest request
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
@@ -133,35 +133,4 @@ public class StockTransactionController {
                 )
         );
     }
-
-
-    @GetMapping("/debug-stock-transaction")
-    public ResponseEntity<String> debugStockTransaction(
-        @AuthenticationPrincipal CustomUserDetails userAuthentication
-    ) {
-        StockTransaction transaction = new StockTransaction();
-        transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setCreatedAt(LocalDateTime.now());
-        transaction.setOwner(userAuthentication.getUser());
-        transaction.setGarage(userAuthentication.getGarage().get());
-
-        var stockItem = new StockItem();
-        stockItem.setQuantity(5);
-        stockItem.setPrice(50L);
-
-        var transactionItem = new TransactionItem();
-        transactionItem.setTransaction(transaction);
-        transactionItem.setStockItem(stockItem);
-        transactionItem.setQuantity(5);
-        transaction.setItems(List.of(transactionItem));
-
-        try {
-            String json = objectMapper.writeValueAsString(transaction);
-            return ResponseEntity.ok(json);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
 }

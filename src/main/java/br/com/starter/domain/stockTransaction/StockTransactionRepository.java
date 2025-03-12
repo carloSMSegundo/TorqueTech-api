@@ -35,7 +35,7 @@ public interface StockTransactionRepository extends JpaRepository<StockTransacti
     );
 
     @Query("""
-        SELECT s.id FROM StockTransaction s
+        SELECT s FROM StockTransaction s
         WHERE s.garage.id = :garageId
         AND s.id in :id
     """)

@@ -16,7 +16,6 @@ public class WorkEventListener {
     @EventListener
     public void handleWorkPendingTooLongEvent(WorkPendingTooLongEvent event) {
         if (event.getWork().getGarage() == null || event.getWork().getGarage().getOwner() == null) {
-            System.out.println("⚠️ Work sem gerente, ignorando notificação.");
             return;
         }
 

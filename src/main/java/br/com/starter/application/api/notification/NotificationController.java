@@ -4,7 +4,6 @@ import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.useCase.notification.GetUnreadNotificationsUseCase;
 import br.com.starter.application.useCase.notification.MarkNotificationAsReadUseCase;
 import br.com.starter.domain.user.CustomUserDetails;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

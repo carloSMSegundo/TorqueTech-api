@@ -5,13 +5,20 @@ import br.com.starter.application.api.stockTransaction.dtos.InputStockTransactio
 import br.com.starter.application.api.stockTransaction.dtos.GetPageStockTransactionRequest;
 import br.com.starter.application.api.stockTransaction.dtos.OutputStockTransactionRequest;
 import br.com.starter.application.useCase.stockTransaction.*;
+import br.com.starter.domain.stockItem.StockItem;
+import br.com.starter.domain.stockTransaction.StockTransaction;
+import br.com.starter.domain.transactionItem.TransactionItem;
 import br.com.starter.domain.user.CustomUserDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,6 +34,7 @@ public class StockTransactionController {
     private final UpdateOutStockTransactionUseCase updateOutStockTransactionUseCase;
     private final UpdateInpStockTransactionUseCase updateInpStockTransactionUseCase;
 
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/input")
     public ResponseEntity<?> input(
@@ -34,10 +42,10 @@ public class StockTransactionController {
             @Valid @RequestBody InputStockTransactionRequest request
     ) {
         var user = userAuthentication.getUser();
+        var savedTransaction = createStockTransactionUseCase.handler(user, request).orElseThrow();
+
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        createStockTransactionUseCase.handler(user, request)
-                )
+            new ResponseDTO<>(savedTransaction)
         );
     }
 
@@ -125,4 +133,35 @@ public class StockTransactionController {
                 )
         );
     }
+
+
+    @GetMapping("/debug-stock-transaction")
+    public ResponseEntity<String> debugStockTransaction(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication
+    ) {
+        StockTransaction transaction = new StockTransaction();
+        transaction.setTransactionDate(LocalDateTime.now());
+        transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setOwner(userAuthentication.getUser());
+        transaction.setGarage(userAuthentication.getGarage().get());
+
+        var stockItem = new StockItem();
+        stockItem.setQuantity(5);
+        stockItem.setPrice(50L);
+
+        var transactionItem = new TransactionItem();
+        transactionItem.setTransaction(transaction);
+        transactionItem.setStockItem(stockItem);
+        transactionItem.setQuantity(5);
+        transaction.setItems(List.of(transactionItem));
+
+        try {
+            String json = objectMapper.writeValueAsString(transaction);
+            return ResponseEntity.ok(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

@@ -70,7 +70,9 @@ public class InputStockTransactionUseCase {
             stockTransaction.getItems().add(stockItem);
         });
 
-        return Optional.of(stockTransactionService.save(stockTransaction));
+        var savedTransaction = stockTransactionService.save(stockTransaction);
+
+        return Optional.of(savedTransaction);
     }
 
     public StockTransaction getStockTransaction(

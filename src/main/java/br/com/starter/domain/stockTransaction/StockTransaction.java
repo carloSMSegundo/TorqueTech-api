@@ -40,9 +40,10 @@ public class StockTransaction {
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TransactionItem> items = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "work_order_id", nullable = false)
-    private WorkOrder WorkOrder;
+    private WorkOrder workOrder;
 
     @JsonIgnore
     @ManyToOne

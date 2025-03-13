@@ -1,6 +1,7 @@
 package br.com.starter.application.api.stockTransaction.dtos;
 
 import br.com.starter.domain.stockTransaction.TransactionCategory;
+import br.com.starter.domain.workOrder.WorkOrder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,4 +13,5 @@ public class OutputStockTransactionRequest {
     private List<OutputStockItemDTO> items;
     private LocalDateTime transactionAt;
     private TransactionCategory category;
+    private WorkOrder workOrder = null;
 }

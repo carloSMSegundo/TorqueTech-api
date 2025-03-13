@@ -32,7 +32,7 @@ public class OutputStockTransactionUseCase {
     private final StockItemService stockItemService;
     private final GarageService garageService;
 
-    public Optional<?> handler(
+    public Optional<StockTransaction> handler(
         User user,
         OutputStockTransactionRequest request
     ) {
@@ -49,6 +49,9 @@ public class OutputStockTransactionUseCase {
         stockTransaction.setCategory(request.getCategory());
         stockTransaction.setOwner(user);
         stockTransaction.setTransactionDate(request.getTransactionAt());
+
+        if (request.getWorkOrder() != null)
+            stockTransaction.setWorkOrder(request.getWorkOrder());
 
         var transActionTotalQuantity = request.getItems().stream()
                 .map(OutputStockItemDTO::getQuantity)

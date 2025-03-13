@@ -63,9 +63,8 @@ public class WorkService {
             mapper = mountMapper(mapper, ids);
         }
 
-        if (request.getStatus() != null && !request.getStatus().isEmpty()) {
-            WorkStatus status = WorkStatus.valueOf(request.getStatus());
-            var ids = workRepository.findByStatusFilter(status, garage.getId());
+        if (request.getStatus() != null) {
+            var ids = workRepository.findByStatusFilter(request.getStatus(), garage.getId());
             mapper = mountMapper(mapper, ids);
         }
 
@@ -81,60 +80,6 @@ public class WorkService {
 
         if (request.getMechanicId() != null) {
             var ids = workRepository.findByMechanicId(request.getMechanicId(), garage.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        return mapper;
-    }
-
-    public Set<UUID> getPageFilterIdsByCustomer(GetPageCustomerRequest request, Garage garage, Customer customer) {
-        Set<UUID> mapper = null;
-
-        if (request.getLicensePlate() != null && !request.getLicensePlate().isEmpty()) {
-            var ids = workRepository.findCustomerByLicensePlates(request.getLicensePlate(), garage.getId(), customer.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
-            var ids = workRepository.findCustomerByTitleFilter(request.getTitle(), garage.getId(), customer.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getStatus() != null && !request.getStatus().isEmpty()) {
-            WorkStatus status = WorkStatus.valueOf(request.getStatus());
-            var ids = workRepository.findCustomerByStatusFilter(status, garage.getId(), customer.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getExpectedAt() != null) {
-            var ids = workRepository.findCustomerByExpectedAt(request.getExpectedAt(), garage.getId(), customer.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        return mapper;
-    }
-
-    public Set<UUID> getPageFilterIdsByMechanic(GetPageMechanicRequest request, Garage garage, Mechanic mechanic) {
-        Set<UUID> mapper = null;
-
-        if (request.getLicensePlate() != null && !request.getLicensePlate().isEmpty()) {
-            var ids = workRepository.findMechanicByLicensePlates(request.getLicensePlate(), garage.getId(), mechanic.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
-            var ids = workRepository.findMechanicByTitleFilter(request.getTitle(), garage.getId(), mechanic.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getStatus() != null && !request.getStatus().isEmpty()) {
-            WorkStatus status = WorkStatus.valueOf(request.getStatus());
-            var ids = workRepository.findMechanicByStatusFilter(status, garage.getId(), mechanic.getId());
-            mapper = mountMapper(mapper, ids);
-        }
-
-        if (request.getExpectedAt() != null) {
-            var ids = workRepository.findMechanicByExpectedAt(request.getExpectedAt(), garage.getId(), mechanic.getId());
             mapper = mountMapper(mapper, ids);
         }
 

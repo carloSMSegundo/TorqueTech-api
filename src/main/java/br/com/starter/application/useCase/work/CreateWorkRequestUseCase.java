@@ -93,15 +93,15 @@ public class CreateWorkRequestUseCase {
                         stockTransactionRequest.setItems(Collections.emptyList());
                     }
 
-                    Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
+                    var stockTransaction = outputStockTransactionUseCase.handler(owner, stockTransactionRequest).orElseThrow(() ->
+                        new ResponseStatusException(
+                            HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Falha ao criar transação de estoque!"
+                        )
+                    );
 
-                    if (stockTransactionOptional.isPresent()) {
-                        StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
-                        // TODO stockTransaction.setWorkOrder(workOrder); // dando erro n consigo setar
-                        workOrder.setStockTransaction(stockTransaction);
-                    } else {
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Falha ao criar transação de estoque!");
-                    }
+                    stockTransaction.setWorkOrder(workOrder);
+                    workOrder.setStockTransaction(stockTransaction);
 
                     return workOrder;
                 })

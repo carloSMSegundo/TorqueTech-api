@@ -1,5 +1,6 @@
 package br.com.starter.application.useCase.stockTransaction;
 
+import br.com.starter.application.api.stockTransaction.dtos.StockTransactionDTO;
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.stockItem.StockItemService;
@@ -21,19 +22,24 @@ public class GetStockTransactionUseCase {
     private final GarageService garageService;
 
     public Optional<?> handler(
-        User user,
-        UUID stockTransactionId
+            User user,
+            UUID stockTransactionId
     ) {
         Garage garage = garageService.getByUser(user).orElseThrow(() ->
-            new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "O usuário não possui uma oficina registrada!"
-            )
+                new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O usuário não possui uma oficina registrada!"
+                )
         );
 
-        return Optional.of(stockTransactionService.getByIdAndGarageId(
+        var stockTransaction = stockTransactionService.getByIdAndGarageId(
             stockTransactionId,
             garage.getId()
-        ));
+        );
+
+        if (!stockTransaction.isPresent())
+            return Optional.empty();
+
+        return Optional.of(new StockTransactionDTO(stockTransaction.orElseThrow()));
     }
 }

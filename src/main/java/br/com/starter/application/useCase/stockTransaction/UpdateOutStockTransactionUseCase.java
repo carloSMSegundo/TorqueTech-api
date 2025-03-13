@@ -58,6 +58,9 @@ public class UpdateOutStockTransactionUseCase {
         stockTransaction.setCategory(request.getCategory());
         stockTransaction.setTransactionDate(request.getTransactionAt());
 
+        if (request.getWorkOrder() != null)
+            stockTransaction.setWorkOrder(request.getWorkOrder());
+
         var transActionTotalQuantity = request.getItems().stream()
                 .map(OutputStockItemDTO::getQuantity)
                 .reduce(0, Integer::sum);

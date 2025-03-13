@@ -1,5 +1,6 @@
 package br.com.starter.application.api.work.dtos;
 
+import br.com.starter.domain.work.WorkStatus;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.UUID;
     private Integer size = 10;
     private Set<String> licensePlate;
     private String title;
-    private String status;
+    private WorkStatus status;
     private LocalDateTime expectedAt;
     private UUID customerId;
     private UUID mechanicId;

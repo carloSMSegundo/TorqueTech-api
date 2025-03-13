@@ -22,8 +22,6 @@ public class WorkController {
     private final CreateWorkRequestUseCase createWorkRequestUseCase;
     private final GetPageWorkUseCase getPageWorkUseCase;
     private final UpdateWorkUseCase updateWorkUseCase;
-    private final GetPageCustomerWorkUseCase getPageCustomerWorkUseCase;
-    private final GetPageMechanicWorkUseCase getPageMechanicWorkUseCase;
     private final UpdateWorkStatusUseCase updateWorkStatusUseCase;
 
     @PostMapping
@@ -39,40 +37,14 @@ public class WorkController {
         );
     }
 
-    @PutMapping("/search/{page}")
+    @PostMapping("/page/{page}")
     public ResponseEntity<?> search(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @RequestBody GetPageWorkRequest request,
-            @PathVariable Integer page
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @RequestBody GetPageWorkRequest request,
+        @PathVariable Integer page
     ) {
         var owner = userAuthentication.getUser();
         Page<?> worksPage = getPageWorkUseCase.handler(owner, request, page);
-
-        return ResponseEntity.ok(new ResponseDTO<>(worksPage));
-    }
-
-    @PutMapping("/search/{customerId}/{page}")
-    public ResponseEntity<?> searchCustomer(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @RequestBody GetPageCustomerRequest request,
-            @PathVariable UUID customerId,
-            @PathVariable Integer page
-    ) {
-        var owner = userAuthentication.getUser();
-        Page<?> worksPage = getPageCustomerWorkUseCase.handler(owner,customerId, page, request);
-
-        return ResponseEntity.ok(new ResponseDTO<>(worksPage));
-    }
-
-    @PutMapping("/search/{mechanicId}/{page}")
-    public ResponseEntity<?> searchMechanic(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @RequestBody GetPageMechanicRequest request,
-            @PathVariable UUID mechanicId,
-            @PathVariable Integer page
-    ) {
-        var owner = userAuthentication.getUser();
-        Page<?> worksPage = getPageMechanicWorkUseCase.handler(owner,mechanicId, page, request);
 
         return ResponseEntity.ok(new ResponseDTO<>(worksPage));
     }

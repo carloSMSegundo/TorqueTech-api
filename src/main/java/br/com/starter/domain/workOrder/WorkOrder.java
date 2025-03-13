@@ -30,7 +30,6 @@ public class WorkOrder {
     @Enumerated(EnumType.STRING)
     private WorkOrderStatus status = WorkOrderStatus.PENDING;
 
-    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "stock_transaction_id", referencedColumnName = "id")
     private StockTransaction stockTransaction;

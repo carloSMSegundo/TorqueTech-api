@@ -58,8 +58,8 @@ public class WorkService {
             mapper = mountMapper(mapper, ids);
         }
 
-        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
-            var ids = workRepository.findByTitleFilter(request.getTitle(), garage.getId());
+        if (request.getQuery() != null && !request.getQuery().isEmpty()) {
+            var ids = workRepository.findByQueryFilter(request.getQuery(), garage.getId());
             mapper = mountMapper(mapper, ids);
         }
 

@@ -12,7 +12,7 @@ import java.util.UUID;
     public class GetPageWorkRequest {
     private Integer size = 10;
     private Set<String> licensePlate;
-    private String title;
+    private String query;
     private WorkStatus status;
     private LocalDateTime expectedAt;
     private UUID customerId;

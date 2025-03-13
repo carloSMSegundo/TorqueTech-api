@@ -22,15 +22,15 @@ public class GetPageWorkUseCase {
     private final GarageService garageService;
 
     public Page<Work> handler(
-            User user,
-            GetPageWorkRequest request,
-            Integer page
+        User user,
+        GetPageWorkRequest request,
+        Integer page
     ) {
         Garage garage = garageService.getByUser(user).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "O usuário não possui uma oficina registrada!"
-                )
+            new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "O usuário não possui uma oficina registrada!"
+            )
         );
 
         var ids = workService.getPageFilterIds(request, garage);

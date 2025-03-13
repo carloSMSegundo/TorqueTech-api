@@ -55,13 +55,17 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
     );
 
     @Query("""
-    SELECT w.id FROM Work w
-    WHERE LOWER(w.title) LIKE LOWER(CONCAT('%', :title, '%'))
-    AND w.garage.id = :garageId
+        SELECT distinct w.id  FROM Work w
+        WHERE w.garage.id = :garageId
+        AND (
+            :query IS NULL
+            OR LOWER(w.title) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(w.vehicle.licensePlate) LIKE LOWER(CONCAT('%', :query, '%'))
+        )
     """)
-    Set<UUID> findByTitleFilter(
-            @Param("title") String title,
-            @Param("garageId") UUID garageId
+    Set<UUID> findByQueryFilter(
+        @Param("query") String query,
+        @Param("garageId") UUID garageId
     );
 
     @Query("""
@@ -204,13 +208,13 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
     );
 
     @Query("""
-    SELECT w FROM Work w
-    WHERE w.id = :workId
-    AND w.garage.id = :garageId
-""")
+        SELECT w FROM Work w
+        WHERE w.id = :workId
+        AND w.garage.id = :garageId
+    """)
     Optional<Work> findByIdAndGarageId(
-            @Param("workId") UUID workId,
-            @Param("garageId") UUID garageId
+        @Param("workId") UUID workId,
+        @Param("garageId") UUID garageId
     );
 
     @Query("""

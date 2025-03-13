@@ -23,6 +23,7 @@ public class WorkController {
     private final GetPageWorkUseCase getPageWorkUseCase;
     private final UpdateWorkUseCase updateWorkUseCase;
     private final UpdateWorkStatusUseCase updateWorkStatusUseCase;
+    private final GetWorkUseCase getWorkUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -39,14 +40,27 @@ public class WorkController {
 
     @PostMapping("/page/{page}")
     public ResponseEntity<?> search(
-        @AuthenticationPrincipal CustomUserDetails userAuthentication,
-        @RequestBody GetPageWorkRequest request,
-        @PathVariable Integer page
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @RequestBody GetPageWorkRequest request,
+            @PathVariable Integer page
     ) {
         var owner = userAuthentication.getUser();
         Page<?> worksPage = getPageWorkUseCase.handler(owner, request, page);
 
         return ResponseEntity.ok(new ResponseDTO<>(worksPage));
+    }
+
+    @GetMapping("/{workId}")
+    public ResponseEntity<?> getById(
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @PathVariable UUID workId
+    ) {
+        var owner = userAuthentication.getUser();
+        return ResponseEntity.ok(
+            new ResponseDTO<>(
+                getWorkUseCase.handler(owner, workId)
+            )
+        );
     }
 
     @PutMapping("/{workId}")

@@ -1,12 +1,18 @@
 package br.com.starter.domain.dasboard;
 
 import br.com.starter.application.api.dashboard.dto.DashboardMetricsDTO;
+import br.com.starter.application.api.dashboard.dto.MetricRequest;
 import br.com.starter.domain.customer.CustomerRepository;
+import br.com.starter.domain.garage.Garage;
+import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.mechanic.MechanicRepository;
 import br.com.starter.domain.stockItem.StockItemRepository;
+import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.WorkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,26 +25,44 @@ public class DashboardService {
     private final CustomerRepository customerRepository;
     private final MechanicRepository mechanicRepository;
     private final WorkRepository workRepository;
+    private final GarageService garageService;
 
-    public DashboardMetricsDTO getMetricsForGarage(UUID garageId, LocalDateTime startDate, LocalDateTime endDate)
+    public DashboardMetricsDTO getMetricsForGarage(User user, MetricRequest request)
     {
-        int varietyOfProducts = stockItemRepository.countDistinctItemsByGarageId(garageId);
-        int totalProductsInStock = stockItemRepository.sumQuantityByGarageId(garageId);
-        int totalCustomers = customerRepository.countByGarageId(garageId);
-        int totalMechanics = mechanicRepository.countByGarageId(garageId);
+        Garage garage = garageService.getByUser(user)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "O usuário não possui uma oficina registrada"
+            ));
 
-        int openWorks = workRepository.countOpenWorksBetweenDates(garageId, startDate, endDate);
-        int completedWorks = workRepository.countCompletedWorksBetweenDates(garageId, startDate, endDate);
+        var startDate = request.getStartDate().atStartOfDay();
+        var endDate = request.getEndDate().atTime(23, 59, 59);
 
-        double revenueFromCompletedWorks = Optional.ofNullable(workRepository.sumCompletedWorksRevenue(garageId, startDate, endDate))
-                                                    .orElse(0.0);
+        int varietyOfProducts = stockItemRepository.countDistinctItemsByGarageId(garage.getId());
+        int totalProductsInStock = stockItemRepository.sumQuantityByGarageId(garage.getId());
+        int totalCustomers = customerRepository.countByGarageId(garage.getId());
+        int totalMechanics = mechanicRepository.countByGarageId(garage.getId());
 
-        double pendingRevenueFromOpenWorks = Optional.ofNullable(workRepository.sumPendingWorksRevenue(garageId, startDate, endDate))
-                .orElse(0.0);
+        int openWorks = workRepository.countOpenWorksBetweenDates(garage.getId(), startDate, endDate);
+        int completedWorks = workRepository.countCompletedWorksBetweenDates(garage.getId(), startDate, endDate);
 
-        return new DashboardMetricsDTO(
-                varietyOfProducts, totalProductsInStock, totalCustomers, totalMechanics,
-                openWorks, completedWorks, revenueFromCompletedWorks, pendingRevenueFromOpenWorks
-        );
+        double revenueFromCompletedWorks = Optional.ofNullable(
+            workRepository.sumCompletedWorksRevenue(garage.getId(), startDate, endDate)
+        ).orElse(0.0);
+
+        double pendingRevenueFromOpenWorks = Optional.ofNullable(
+            workRepository.sumPendingWorksRevenue(garage.getId(), startDate, endDate)
+        ).orElse(0.0);
+
+        var metrics = new DashboardMetricsDTO();
+        metrics.setCompletedWorks(completedWorks);
+        metrics.setPendingRevenueFromOpenWorks(pendingRevenueFromOpenWorks);
+        metrics.setOpenWorksThisMonth(openWorks);
+        metrics.setTotalMechanics(totalMechanics);
+        metrics.setTotalCustomers(totalCustomers);
+        metrics.setTotalProductsInStock(totalProductsInStock);
+        metrics.setVarietyOfProducts(varietyOfProducts);
+        metrics.setRevenueFromCompletedWorks(revenueFromCompletedWorks);
+
+        return metrics;
     }
 }

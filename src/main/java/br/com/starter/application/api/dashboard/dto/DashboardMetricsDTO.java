@@ -1,10 +1,8 @@
 package br.com.starter.application.api.dashboard.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class DashboardMetricsDTO {
     private int varietyOfProducts;
     private int totalProductsInStock;

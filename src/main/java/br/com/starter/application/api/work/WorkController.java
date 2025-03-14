@@ -79,16 +79,15 @@ public class WorkController {
 
     @PutMapping("/{workId}/status")
     public ResponseEntity<?> updateStatus(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody UpdateWorkStatusRequest request,
-            @PathVariable UUID workId
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody UpdateWorkStatusRequest request,
+        @PathVariable UUID workId
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        updateWorkStatusUseCase.handler(user, workId, request)
-                )
+            new ResponseDTO<>(
+                updateWorkStatusUseCase.handler(user, workId, request)
+            )
         );
     }
-
 }

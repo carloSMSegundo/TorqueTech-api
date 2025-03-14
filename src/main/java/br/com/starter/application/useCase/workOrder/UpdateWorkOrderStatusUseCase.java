@@ -23,25 +23,12 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class UpdateWorkOrderStatusUseCase {
-    private final WorkService workService;
     private final WorkOrderService workOrderService;
-    private final GarageService garageService;
     private final CancelStockTransactionUseCase cancelStockTransactionUseCase;
 
     @Transactional
-    public Optional<WorkOrder> handler(User user, UUID workId, UUID workOrderId, UpdateWorkOrderStatusRequest request) {
-
-        Garage garage = garageService.getByUser(user)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "O usuário não possui uma oficina registrada"
-                ));
-
-        Work work = workService.getByIdAndGarageId(workId, garage.getId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.FORBIDDEN, "Usuário não autorizado"
-                ));
-
-        WorkOrder workOrder = workOrderService.getByIdAndWork(workOrderId, work.getId())
+    public Optional<WorkOrder> handler(User user, UUID workOrderId, UpdateWorkOrderStatusRequest request) {
+        WorkOrder workOrder = workOrderService.getById(workOrderId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Ordem de serviço não encontrada!"
                 ));

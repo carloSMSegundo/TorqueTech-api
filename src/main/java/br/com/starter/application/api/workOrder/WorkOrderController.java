@@ -38,33 +38,31 @@ public class WorkOrderController {
         );
     }
 
-    @PutMapping("/{workId}/{workOrderId}")
+    @PutMapping("/{workOrderId}")
     public ResponseEntity<?> update(
             @AuthenticationPrincipal CustomUserDetails userAuthentication,
             @Valid @RequestBody UpdateWorkOrderDTO request,
-            @PathVariable UUID workOrderId,
-            @PathVariable UUID workId
+            @PathVariable UUID workOrderId
     ) {
         var owner = userAuthentication.getUser();
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        updateWorkOrderUseCase.handler(workOrderId, workId, owner, request)
-                )
+            new ResponseDTO<>(
+                updateWorkOrderUseCase.handler(workOrderId, owner, request)
+            )
         );
     }
 
-    @PutMapping("/{workId}/{workOrderId}/status")
+    @PutMapping("/{workOrderId}/status")
     public ResponseEntity<?> updateStatus(
-            @AuthenticationPrincipal CustomUserDetails userAuthentication,
-            @Valid @RequestBody UpdateWorkOrderStatusRequest request,
-            @PathVariable UUID workOrderId,
-            @PathVariable UUID workId
+        @AuthenticationPrincipal CustomUserDetails userAuthentication,
+        @Valid @RequestBody UpdateWorkOrderStatusRequest request,
+        @PathVariable UUID workOrderId
     ) {
         var user = userAuthentication.getUser();
         return ResponseEntity.ok(
-                new ResponseDTO<>(
-                        updateWorkOrderStatusUseCase.handler(user, workId, workOrderId, request)
-                )
+            new ResponseDTO<>(
+                updateWorkOrderStatusUseCase.handler(user, workOrderId, request)
+            )
         );
     }
 

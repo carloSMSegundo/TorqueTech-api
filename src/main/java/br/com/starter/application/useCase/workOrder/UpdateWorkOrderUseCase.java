@@ -8,6 +8,7 @@ import br.com.starter.application.useCase.stockTransaction.UpdateOutStockTransac
 import br.com.starter.domain.garage.Garage;
 import br.com.starter.domain.garage.GarageService;
 import br.com.starter.domain.stockTransaction.StockTransaction;
+import br.com.starter.domain.stockTransaction.StockTransactionService;
 import br.com.starter.domain.stockTransaction.TransactionCategory;
 import br.com.starter.domain.user.User;
 import br.com.starter.domain.work.Work;
@@ -32,28 +33,28 @@ public class UpdateWorkOrderUseCase {
     private final GarageService garageService;
     private final WorkOrderService workOrderService;
     private final UpdateOutStockTransactionUseCase updateOutStockTransactionUseCase;
+    private final StockTransactionService stockTransactionService;
     private final OutputStockTransactionUseCase outputStockTransactionUseCase;
     private final CancelStockTransactionUseCase cancelStockTransactionUseCase;
 
     @Transactional
-    public Optional<WorkOrder> handler(UUID workOrderId, UUID workId, User owner, UpdateWorkOrderDTO request) {
-
-        Garage garage = garageService.getByUser(owner)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não possui uma oficina registrada"));
-
-        Work work = workService.getByIdAndGarageId(workId, garage.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado"));
-
-        WorkOrder workOrder = workOrderService.getByIdAndWork(workOrderId, work.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "WorkOrder não encontrada!"));
+    public Optional<WorkOrder> handler(UUID workOrderId, User owner, UpdateWorkOrderDTO request) {
+        WorkOrder workOrder = workOrderService.getById(workOrderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ordem de serviço não encontrada!"));
 
         workOrder.setTitle(request.getTitle());
-        workOrder.setDescription(request.getDescription());
         workOrder.setCost(request.getCost());
         workOrder.setStatus(request.getStatus());
-        workOrder.setNote(request.getNote());
         workOrder.setStartAt(request.getStartAt());
         workOrder.setExpectedAt(request.getExpectedAt());
+
+        if (request.getDescription() != null)
+            workOrder.setDescription(request.getDescription());
+
+        if (request.getNote() != null)
+            workOrder.setNote(request.getNote());
+
+        StockTransaction stockTransaction = null;
 
         if (request.getStockItems() != null && !request.getStockItems().isEmpty()) {
             OutputStockTransactionRequest stockTransactionRequest = new OutputStockTransactionRequest();
@@ -71,7 +72,7 @@ public class UpdateWorkOrderUseCase {
                 Optional<?> stockTransactionOptional = outputStockTransactionUseCase.handler(owner, stockTransactionRequest);
 
                 if (stockTransactionOptional.isPresent()) {
-                    StockTransaction stockTransaction = (StockTransaction) stockTransactionOptional.get();
+                    stockTransaction = (StockTransaction) stockTransactionOptional.get();
                     workOrder.setStockTransaction(stockTransaction);
                 } else {
                     throw new ResponseStatusException(
@@ -86,11 +87,15 @@ public class UpdateWorkOrderUseCase {
         } else if (request.getStatus() == WorkOrderStatus.DELETED) {
             workOrder.setDeletedAt(LocalDateTime.now());
             cancelStockTransactionUseCase.handler(owner, workOrder.getStockTransaction().getId());
-            work.getOrders().remove(workOrder);
         }
 
-        workService.save(work);
+        var savedWorkOrder = workOrderService.save(workOrder);
 
-        return Optional.of(workOrderService.save(workOrder));
+        if (stockTransaction != null) {
+            stockTransaction.setWorkOrder(savedWorkOrder);
+            stockTransactionService.save(stockTransaction);
+        }
+
+        return Optional.of(savedWorkOrder);
     }
 }

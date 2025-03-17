@@ -1,28 +1,36 @@
 package br.com.starter.domain.events;
 
+import br.com.starter.domain.notification.Notification;
+import br.com.starter.domain.notification.NotificationQueueService;
 import br.com.starter.domain.user.User;
-import br.com.starter.domain.notification.NotificationService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WorkEventListener {
-    private final NotificationService notificationService;
+    private final NotificationQueueService notificationQueueService;
 
-    public WorkEventListener(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    public WorkEventListener(NotificationQueueService notificationQueueService) {
+        this.notificationQueueService = notificationQueueService;
     }
 
     @EventListener
     public void handleWorkPendingTooLongEvent(WorkPendingTooLongEvent event) {
-        if (event.getWork().getGarage() == null || event.getWork().getGarage().getOwner() == null) {
+        User manager = event.getWork().getGarage().getOwner();
+
+        if (manager == null) {
+            System.out.println("⚠ Erro: Gerente não encontrado para o trabalho " + event.getWork().getTitle());
             return;
         }
 
-        User manager = event.getWork().getGarage().getOwner();
-        String message = "🚨 O trabalho " + event.getWork().getTitle() + " está PENDING há mais de 2 horas!";
+        Notification notification = new Notification();
+        notification.setUser(manager);
+        notification.setMessage("O trabalho '" + event.getWork().getTitle() + "' está pendente há mais de 2 horas!");
 
-        notificationService.notifyUser(manager, message);
+        notificationQueueService.addNotification(notification);
+
+        // 🔹 Logs melhorados para depuração
+        System.out.println("✅ Notificação adicionada à fila para " + manager.getProfile().getName());
+        System.out.println("📢 Mensagem: " + notification.getMessage());
     }
 }
-

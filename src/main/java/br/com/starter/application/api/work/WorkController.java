@@ -1,16 +1,19 @@
 package br.com.starter.application.api.work;
 
 import br.com.starter.application.api.common.ResponseDTO;
-import br.com.starter.application.api.local.dtos.UpdateLocalStatusRequest;
 import br.com.starter.application.api.work.dtos.*;
 import br.com.starter.application.useCase.work.*;
 import br.com.starter.domain.user.CustomUserDetails;
+import br.com.starter.domain.work.WorkReportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ public class WorkController {
     private final UpdateWorkUseCase updateWorkUseCase;
     private final UpdateWorkStatusUseCase updateWorkStatusUseCase;
     private final GetWorkUseCase getWorkUseCase;
+    private final WorkReportService workReportService;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -89,5 +93,18 @@ public class WorkController {
                 updateWorkStatusUseCase.handler(user, workId, request)
             )
         );
+    }
+
+    @GetMapping("/{workId}/txt")
+    public ResponseEntity<byte[]> getWorkReportTxt(
+            @PathVariable UUID workId
+    ) {
+        byte[] txtFile = workReportService.generateWorkReport(workId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=work_report_" + workId + ".txt");
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/plain");
+
+        return new ResponseEntity<>(txtFile, headers, HttpStatus.OK);
     }
 }

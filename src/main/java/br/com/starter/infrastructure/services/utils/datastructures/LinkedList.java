@@ -2,13 +2,10 @@ package br.com.starter.infrastructure.services.utils.datastructures;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Getter
-public class LinkedList<T> implements Iterable<T> {
+public class LinkedList<T> implements Queue<T> {
     private Node<T> head;
     private Node<T> tail;
     private int size;
@@ -19,7 +16,43 @@ public class LinkedList<T> implements Iterable<T> {
         this.size = 0;
     }
 
-    public void add(T data) {
+    @Override
+    public boolean offer(T data) { // Adiciona ao final da fila
+        add(data);
+        return true;
+    }
+
+    @Override
+    public T poll() { // Remove e retorna o primeiro elemento da fila
+        if (isEmpty()) {
+            return null;
+        }
+        return removeFirst();
+    }
+
+    @Override
+    public T peek() { // Retorna o primeiro elemento sem remover
+        if (isEmpty()) {
+            return null;
+        }
+        return head.getData();
+    }
+
+    // Implementação dos métodos restantes da Queue<T>
+    @Override
+    public void clear() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean add(T data) {
         Node<T> newNode = new Node<>(data);
         if (head == null) {
             head = newNode;
@@ -29,77 +62,7 @@ public class LinkedList<T> implements Iterable<T> {
             tail = newNode;
         }
         size++;
-    }
-
-    public void addFirst(T data) {
-        Node<T> newNode = new Node<>(data);
-        if (head == null) {
-            head = newNode;
-            tail = newNode;
-        } else {
-            newNode.setNext(head);
-            head = newNode;
-        }
-        size++;
-    }
-
-    public boolean remove(T data) {
-        if (head == null) {
-            return false;
-        }
-
-        if (head.getData().equals(data)) {
-            head = head.getNext();
-            if (head == null) {
-                tail = null;
-            }
-            size--;
-            return true;
-        }
-
-        Node<T> current = head;
-        while (current.getNext() != null) {
-            if (current.getNext().getData().equals(data)) {
-                current.setNext(current.getNext().getNext());
-                if (current.getNext() == null) {
-                    tail = current;
-                }
-                size--;
-                return true;
-            }
-            current = current.getNext();
-        }
-
-        return false;
-    }
-
-    public boolean contains(T data) {
-        Node<T> current = head;
-        while (current != null) {
-            if (current.getData().equals(data)) {
-                return true;
-            }
-            current = current.getNext();
-        }
-        return false;
-    }
-
-    public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
-        Node<T> current = head;
-        for (int i = 0; i < index; i++) {
-            current = current.getNext();
-        }
-        return current.getData();
-    }
-
-    public void clear() {
-        head = null;
-        tail = null;
-        size = 0;
+        return true;
     }
 
     public List<T> toList() {
@@ -112,9 +75,38 @@ public class LinkedList<T> implements Iterable<T> {
         return list;
     }
 
+
+    @Override
+    public boolean remove(Object data) {
+        if (head == null) {
+            return false;
+        }
+        if (head.getData().equals(data)) {
+            head = head.getNext();
+            if (head == null) {
+                tail = null;
+            }
+            size--;
+            return true;
+        }
+        Node<T> current = head;
+        while (current.getNext() != null) {
+            if (current.getNext().getData().equals(data)) {
+                current.setNext(current.getNext().getNext());
+                if (current.getNext() == null) {
+                    tail = current;
+                }
+                size--;
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+
     public T removeFirst() {
         if (head == null) {
-            throw new NoSuchElementException("List is empty");
+            throw new NoSuchElementException("A lista está vazia");
         }
         T data = head.getData();
         head = head.getNext();
@@ -125,40 +117,10 @@ public class LinkedList<T> implements Iterable<T> {
         return data;
     }
 
-    public T removeLast() {
-        if (tail == null) {
-            throw new NoSuchElementException("List is empty");
-        }
-        T data = tail.getData();
-        if (head == tail) {
-            head = tail = null;
-        } else {
-            Node<T> current = head;
-            while (current.getNext() != tail) {
-                current = current.getNext();
-            }
-            current.setNext(null);
-            tail = current;
-        }
-        size--;
-        return data;
-    }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    public int indexOf(T data) {
-        Node<T> current = head;
-        int index = 0;
-        while (current != null) {
-            if (current.getData().equals(data)) {
-                return index;
-            }
-            current = current.getNext();
-            index++;
-        }
-        return -1;
+    @Override
+    public int size() {
+        return size;
     }
 
     @Override
@@ -182,4 +144,32 @@ public class LinkedList<T> implements Iterable<T> {
             }
         };
     }
+
+    // Métodos não utilizados na fila, apenas lançam exceções
+    @Override
+    public T remove() { throw new UnsupportedOperationException(); }
+
+    @Override
+    public T element() { throw new UnsupportedOperationException(); }
+
+    @Override
+    public boolean contains(Object o) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public Object[] toArray() { throw new UnsupportedOperationException(); }
+
+    @Override
+    public <T1> T1[] toArray(T1[] a) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+
+    @Override
+    public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 }

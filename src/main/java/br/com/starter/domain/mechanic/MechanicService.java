@@ -8,9 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +55,56 @@ public class MechanicService {
 
     public List<Mechanic> findByGarageId(UUID garageId) {
         return mechanicRepository.findByGarageId(garageId);
+    }
+
+    public List<Mechanic> getMechanicsByRegistrationDate(UUID garageId, String query, boolean sortByCreatedAt) {
+        Mechanic[] mechanicsArray = mechanicRepository.findAllByGarageId(garageId).toArray(new Mechanic[0]); // convertendo para vetor
+
+        // Busca linear
+        if (query != null && !query.isEmpty()) {
+            mechanicsArray = searchMechanicsByName(mechanicsArray, query);
+        }
+
+        // Insertion Sort
+        if (sortByCreatedAt) {
+            insertionSortByCreatedAt(mechanicsArray);
+        }
+
+        // converte o vetor de volta
+        return new ArrayList<>(Arrays.asList(mechanicsArray));
+    }
+
+    // Busca linear
+    private Mechanic[] searchMechanicsByName(Mechanic[] mechanics, String searchQuery) {
+        int count = 0;
+        for (Mechanic mechanic : mechanics) {
+            if (mechanic.getUser().getProfile().getName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                count++;
+            }
+        }
+
+        Mechanic[] result = new Mechanic[count];
+        int index = 0;
+        for (Mechanic mechanic : mechanics) {
+            if (mechanic.getUser().getProfile().getName().toLowerCase().contains(searchQuery.toLowerCase())) {
+                result[index++] = mechanic;
+            }
+        }
+
+        return result;
+    }
+
+    // Insertion sort
+    private void insertionSortByCreatedAt(Mechanic[] mechanics) {
+        for (int i = 1; i < mechanics.length; i++) {
+            Mechanic key = mechanics[i];
+            int j = i - 1;
+
+            while (j >= 0 && mechanics[j].getCreatedAt().isAfter(key.getCreatedAt())) {
+                mechanics[j + 1] = mechanics[j];
+                j--;
+            }
+            mechanics[j + 1] = key;
+        }
     }
 }

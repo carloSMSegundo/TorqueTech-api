@@ -52,5 +52,7 @@ public interface MechanicRepository extends JpaRepository<Mechanic, UUID> {
         @Param("garageId") UUID garageId
     );
 
+    List<Mechanic> findAllByGarageId(UUID garageId);
+
     int countByGarageId(UUID garageId);
 }

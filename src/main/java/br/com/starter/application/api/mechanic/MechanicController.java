@@ -3,6 +3,7 @@ package br.com.starter.application.api.mechanic;
 import br.com.starter.application.api.common.GetPageRequest;
 import br.com.starter.application.api.common.ResponseDTO;
 import br.com.starter.application.api.mechanic.dtos.CreateMechanicDTO;
+import br.com.starter.application.api.mechanic.dtos.GetMechanicRequest;
 import br.com.starter.application.api.mechanic.dtos.UpdateMechanicDTO;
 import br.com.starter.application.useCase.mechanic.*;
 import br.com.starter.domain.user.CustomUserDetails;
@@ -23,6 +24,7 @@ public class MechanicController {
     private final GetMechanicUseCase getMechanicUseCase;
     private final UpdateMechanicUseCase updateMechanicUseCase;
     private final GetAllMechanicsUseCase getAllMechanicsUseCase;
+    private final GetMechanicByRegistrationDateUseCase getMechanicByRegistrationDateUseCase;
 
     @PostMapping
     public ResponseEntity<?> create(
@@ -86,4 +88,18 @@ public class MechanicController {
             )
         );
     }
+
+    @GetMapping("/by-registration-date")
+    public ResponseEntity<?> getMechanicsByRegistrationDate(
+            @AuthenticationPrincipal CustomUserDetails userAuthentication,
+            @RequestBody GetMechanicRequest request
+    ) {
+        var user = userAuthentication.getUser();
+        return ResponseEntity.ok(
+                new ResponseDTO<>(
+                getMechanicByRegistrationDateUseCase.handler(user, request)
+                )
+        );
+    }
+
 }

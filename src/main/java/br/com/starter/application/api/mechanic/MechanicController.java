@@ -89,7 +89,7 @@ public class MechanicController {
         );
     }
 
-    @GetMapping("/by-registration-date")
+    @GetMapping("/all")
     public ResponseEntity<?> getMechanicsByRegistrationDate(
             @AuthenticationPrincipal CustomUserDetails userAuthentication,
             @RequestBody GetMechanicRequest request
